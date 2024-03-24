@@ -49,10 +49,7 @@ const userSchema = mongoose.Schema({
   },
   activeAccountToken: { type: String, select: true },
   activeAccountTokenExpires: { type: Date, select: true },
-  refreshToken: {
-    type: String,
-    default: null
-  }
+  
 });
 //--------------- MIDDLEWERE -----------------------
 /// ta3mel error hathi 
@@ -87,6 +84,7 @@ userSchema.methods.correctPassword = async function (
   userpassword,
   password
 ) {
+  
   return await bcrypt.compare(userpassword, password);
 };
 // 2 ) changePasswordAfter

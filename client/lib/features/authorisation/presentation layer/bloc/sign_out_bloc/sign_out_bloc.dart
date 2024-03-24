@@ -7,15 +7,16 @@ import '../../../domain layer/usecases/sign_out.dart';
 part 'sign_out_event.dart';
 part 'sign_out_state.dart';
 
-class SignOutBloc extends Bloc<SignOutMyAccountEvent, SignOutState> {
+class SignOutBloc extends Bloc<SignOutEvent, SignOutState> {
   SignOutUseCase signOut;
 
   SignOutBloc({required this.signOut}) : super(SignOutInitial()) {
-    on<SignOutMyAccountEvent>((event, emit) {});
-    on<SignOutMyAccountEvent>(_signOut);
+    on<SignOutEvent>((event, emit) {});
+    on<SignOutMyAccountEventPressed>(_signOut);
   }
 
-  void _signOut(SignOutMyAccountEvent event, Emitter<SignOutState> emit) async {
+  void _signOut(
+      SignOutMyAccountEventPressed event, Emitter<SignOutState> emit) async {
     emit(SignOutLoading());
     final failureOrUser = await signOut();
     failureOrUser.fold(

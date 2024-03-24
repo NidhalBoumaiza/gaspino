@@ -17,15 +17,15 @@ abstract class UserRemoteDataSource {
 
   Future<Unit> resetPasswordStepOne(String passwordResetCode);
 
-  Future<Unit> resetPasswordStepTwo(String passwordResetCode, String password,
-      String passwordConfirm);
+  Future<Unit> resetPasswordStepTwo(
+      String passwordResetCode, String password, String passwordConfirm);
 
   Future<UserModel> signIn(String email, String password);
 
   /// NEXT METHODS ARE FOR AUTHENTICATED USERS
 
-  Future<Unit> updateUserPassword(String oldPassword, String newPassword,
-      String newPasswordConfirm);
+  Future<Unit> updateUserPassword(
+      String oldPassword, String newPassword, String newPasswordConfirm);
 
   Future<Unit> updateCoordinate(Coordinate coordinate);
 
@@ -55,7 +55,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final response = await client.post(
       Uri.parse("${dotenv.env['URL']}/users/signup"),
       body: body,
-
     );
 
     return handleResponse(response);
@@ -84,14 +83,13 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final response = await client.post(
       Uri.parse("${dotenv.env['URL']}/users/resetPasswordStepOne"),
       body: body,
-
     );
     return handleResponse(response);
   }
 
   @override
-  Future<Unit> resetPasswordStepTwo(String passwordResetCode, String password,
-      String passwordConfirm) async {
+  Future<Unit> resetPasswordStepTwo(
+      String passwordResetCode, String password, String passwordConfirm) async {
     final body = {
       "passwordResetCode": passwordResetCode,
       "password": password,
@@ -100,7 +98,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final response = await client.patch(
       Uri.parse("${dotenv.env['URL']}/users/resetPasswordStepTwo"),
       body: body,
-
     );
     return handleResponse(response);
   }
@@ -119,12 +116,13 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       final responseBody = jsonDecode(response.body);
       final token = responseBody['token'];
       saveToken(token);
+      print(responseBody['data']['user']);
       return UserModel.fromJson(responseBody['data']['user']);
     } else if (response.statusCode == 400) {
       final responseBody = jsonDecode(response.body);
       final errorMessage = responseBody['message'] as String;
 
-      ServerMessageException.message = errorMessage;
+      ServerMessageFailure.message = errorMessage;
 
       throw ServerMessageException();
     } else {
@@ -135,17 +133,23 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   //Require Authentication
 
   @override
-  Future<Unit> updateUserPassword(String oldPassword, String newPassword,
-      String newPasswordConfirm) async {
+  Future<Unit> updateUserPassword(
+      String oldPassword, String newPassword, String newPasswordConfirm) async {
     final body = {
       "oldPassword": oldPassword,
-      "password": newPassword,
+      "newPassword": newPassword,
       "newPasswordConfirm": newPasswordConfirm,
     };
+    dynamic token = await this.token;
+    if (token == null) {
+      token = "";
+    }
     final response = await client.patch(
       Uri.parse("${dotenv.env['URL']}/users/updateUserPassword"),
       body: body,
-
+      headers: {
+        "Authorization": "Bearer ${token}",
+      },
     );
 
     return handleResponse(response);
@@ -159,10 +163,17 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         "longitude": coordinate.longitude,
       },
     });
+    dynamic token = await this.token;
+    if (token == null) {
+      token = "";
+    }
     final response = await client.patch(
       Uri.parse("${dotenv.env['URL']}/users/updateCoordinate"),
+      headers: {
+        "Authorization": "Bearer ${token}",
+        "Content-Type": "application/json",
+      },
       body: body,
-
     );
     return handleResponse(response);
   }
@@ -187,12 +198,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return Future.value(unit);
     } else if (response.statusCode == 400) {
       final errorMessage = responseBody['message'] as String;
-      ServerMessageException.message = errorMessage;
-      ServerMessageFailure.message = ServerMessageException.message;
+
+      ServerMessageFailure.message = errorMessage;
       throw ServerMessageException();
     } else if (response.statusCode == 410) {
       final errorMessage = responseBody['message'] as String;
-      throw UnauthorizedException(message: errorMessage);
+
+      UnauthorizedFailure.message = errorMessage;
+      throw UnauthorizedException();
     } else {
       throw ServerException();
     }
@@ -200,13 +213,13 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   saveToken(String token) async {
     final SharedPreferences sharedPreferences =
-    await SharedPreferences.getInstance();
+        await SharedPreferences.getInstance();
     sharedPreferences.setString('token', token);
   }
 
-  Future<String> get token async {
+  Future<dynamic> get token async {
     final SharedPreferences sharedPreferences =
-    await SharedPreferences.getInstance();
-    return sharedPreferences.getString('token') as String;
+        await SharedPreferences.getInstance();
+    return sharedPreferences.getString('token');
   }
 }

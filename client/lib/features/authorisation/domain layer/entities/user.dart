@@ -55,8 +55,8 @@ class User extends Equatable {
 }
 
 class Coordinate extends Equatable {
-  late double latitude;
-  late double longitude;
+  late num latitude;
+  late num longitude;
 
   Coordinate(
     this.latitude,

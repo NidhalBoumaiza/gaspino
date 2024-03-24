@@ -169,13 +169,22 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-  // 2) verify if the token is valid or not :
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  // 3) verify if the user still exist in database or no :
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
-    return next(new AppError("L'utilisateur n'existe plus !" , 410));
+  // 2) vérifier si le token est valide ou non :
+let decoded;
+try {
+  decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+} catch (err) {
+  if (err instanceof jwt.TokenExpiredError) {
+    return next(new AppError('Votre session a expiré! Veuillez vous reconnecter.', 401));
+  } else {
+    return next(new AppError('Erreur lors de la vérification du token.', 401));
   }
+}
+// 3) vérifier si l'utilisateur existe toujours dans la base de données ou non :
+const currentUser = await User.findById(decoded.id);
+if (!currentUser) {
+  return next(new AppError("L'utilisateur n'existe plus!", 410));
+}
   req.user = currentUser;
   next();
 });
@@ -228,8 +237,9 @@ exports.resetPasswordStepOne = catchAsync(async (req, res, next) => {
     passwordResetCode: req.body.passwordResetCode,
     passwordResetExpires: { $gt: Date.now() },
   });
+  
   if (!account) {
-    return next(new AppError("Le Code est invalide ou a expiré !! "), 400);
+    return next(new AppError("Le Code est invalide ou a expiré !! " , 400) );
   }
  
   res.status(200).json({
@@ -245,7 +255,7 @@ exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
   });
 
   if (!account) {
-    return next(new AppError("Le Code est invalide ou a expiré !! "), 404);
+    return next(new AppError("Le Code est invalide ou a expiré !! " , 400), );
   }
   if (req.body.password === null || req.body.passwordConfirm === null || req.body.password === "" || req.body.passwordConfirm === "") {
     return next(
@@ -260,8 +270,8 @@ exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         "Les mots de passe ne correspondent pas ! veuillez saisir les mêmes mots de passe !"
-      ),
-      400
+      ,400),
+      
     );
   }
 
@@ -282,7 +292,7 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
     _id: req.user.id,
   }).select("+password");
   if (
-    !(await account.correctPassword(req.body.oldPassword, account.password))
+    !(await account.correctPassword(req.body.oldPassword , account.password))
   ) {
     return next(
       new AppError(
@@ -292,21 +302,20 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (account.correctPassword(req.body.newPassword, account.password)) {
+  if (await account.correctPassword(req.body.newPassword, account.password)) {
     return next(
       new AppError(
-        "Saisir une autre mot de passe differnt de votre ancien mot de passe ! "
+        "Saisir une autre mot de passe differnt de votre ancien mot de passe ! " , 400
       ),
-      400
     );
   }
 
-  if (req.body.newPassword !== req.body.newPasswordConfirm) {
+  if (await req.body.newPassword !== req.body.newPasswordConfirm) {
     return next(
       new AppError(
         "Les mots de passe ne correspondent pas ! veuillez confirmer votre mot de passe !"
-      ),
-      400
+      ,400),
+      
     );
   }
 
@@ -335,17 +344,14 @@ exports.refreshToken = catchAsync(async (req, res, next) => {
   const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
   const user = await User.findById(decoded.id);
 
-  if (!user || user.refreshToken !== refreshToken) {
+  if (!user) {
     return next(new AppError('Jeton de rafraîchissement invalide', 401));
   }
 
   const newAccessToken = signToken(user._id);
   const newRefreshToken = generateRefreshToken(user._id);
 
-  user.refreshToken = newRefreshToken;
-  await user.save({ validateBeforeSave: false });
-
-  res.status(200).json({
+    res.status(200).json({
     status: 'success',
     accessToken: newAccessToken,
     refreshToken: newRefreshToken

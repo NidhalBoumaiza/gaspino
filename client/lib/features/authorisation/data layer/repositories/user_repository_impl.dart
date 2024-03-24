@@ -72,6 +72,8 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -79,8 +81,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> resetPasswordStepTwo(String passwordResetCode,
-      String password, String passwordConfirm) async {
+  Future<Either<Failure, Unit>> resetPasswordStepTwo(
+      String passwordResetCode, String password, String passwordConfirm) async {
     if (await networkInfo.isConnected) {
       try {
         await userRemoteDataSource.resetPasswordStepTwo(
@@ -88,6 +90,8 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -99,13 +103,12 @@ class UserRepositoryImpl implements UserRepository {
     if (await networkInfo.isConnected) {
       try {
         final UserModel userModel =
-        await userRemoteDataSource.signIn(email, password);
+            await userRemoteDataSource.signIn(email, password);
         await userLocalDataSource.cacheUser(userModel);
         return Right(userModel);
       } on ServerException {
         return Left(ServerFailure());
       } on ServerMessageException {
-        ServerMessageFailure.message = ServerMessageException.message;
         return Left(ServerMessageFailure());
       }
     } else {
@@ -116,8 +119,8 @@ class UserRepositoryImpl implements UserRepository {
   //------------------------------------------------------------------------------
   /// NEXT METHODS ARE FOR AUTHENTICATED USERS
   @override
-  Future<Either<Failure, Unit>> updateUserPassword(String oldPassword,
-      String newPassword, String newPasswordConfirm) async {
+  Future<Either<Failure, Unit>> updateUserPassword(
+      String oldPassword, String newPassword, String newPasswordConfirm) async {
     if (await networkInfo.isConnected) {
       try {
         await userRemoteDataSource.updateUserPassword(
@@ -125,6 +128,10 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -139,6 +146,10 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -153,6 +164,10 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -167,6 +182,10 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());

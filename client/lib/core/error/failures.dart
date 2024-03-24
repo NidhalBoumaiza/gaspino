@@ -36,7 +36,7 @@ class ServerMessageFailure extends Failure {
 class UnauthorizedFailure extends Failure {
   static late String message;
 
-  UnauthorizedFailure({required String message});
+  UnauthorizedFailure();
 
   @override
   List<Object?> get props => [message];

@@ -6,7 +6,6 @@ const router = express.Router();
 router.route("/signup").post( uploadd.uploadPicture , authController.signUp);
 router.route("/accountActivation/:token").get(authController.activeAccount);
 router.post('/refreshToken', authController.refreshToken);
-router.route("/login2").post(authController.login);
 router.route("/imageupload").post(uploadd.uploadPicture);
 router.route("/forgotpassword").post(authController.forgotPassword);
 router.route("/resetPasswordStepOne").post(authController.resetPasswordStepOne);

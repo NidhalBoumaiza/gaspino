@@ -59,6 +59,7 @@ exports.disableMyAccount = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMyLocation = catchAsync(async (req, res, next) => {
+  
   req.user.coordinate = req.body.coordinate;
   await req.user.save({ validateBeforeSave: false });
   console.log(req.user);
