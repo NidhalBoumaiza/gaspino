@@ -27,7 +27,7 @@ abstract class UserRemoteDataSource {
   Future<Unit> updateUserPassword(
       String oldPassword, String newPassword, String newPasswordConfirm);
 
-  Future<Unit> updateCoordinate(Coordinate coordinate);
+  Future<Unit> updateLocation(Location location);
 
   Future<Unit> disableMyAccount();
 }
@@ -51,6 +51,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       "passwordConfirm": userModel.passwordConfirm,
       "firstName": userModel.firstName,
       "lastName": userModel.lastName,
+      "phoneNumber": userModel.phoneNumber,
     };
     final response = await client.post(
       Uri.parse("${dotenv.env['URL']}/users/signup"),
@@ -156,13 +157,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Future<Unit> updateCoordinate(Coordinate coordinate) async {
+  Future<Unit> updateLocation(Location location) async {
+    print("location: ${location.coordinates}");
     final body = jsonEncode({
-      "coordinate": {
-        "latitude": coordinate.latitude,
-        "longitude": coordinate.longitude,
+      "location": {
+        "coordinates": location.coordinates,
       },
     });
+    print(body);
     dynamic token = await this.token;
     if (token == null) {
       token = "";

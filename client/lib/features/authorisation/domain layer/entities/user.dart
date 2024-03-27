@@ -5,10 +5,11 @@ class User extends Equatable {
   late String profilePicture;
   late String firstName;
   late String lastName;
+  late String phoneNumber;
   late String email;
   late String password;
   late String passwordConfirm;
-  late Coordinate coordinate;
+  late Location location;
   late String passwordResetCode;
   late bool accountStatus;
 
@@ -17,10 +18,11 @@ class User extends Equatable {
     this.profilePicture,
     this.firstName,
     this.lastName,
+    this.phoneNumber,
     this.email,
     this.password,
     this.passwordConfirm,
-    this.coordinate,
+    this.location,
     this.passwordResetCode,
     this.accountStatus,
   );
@@ -28,13 +30,14 @@ class User extends Equatable {
   User.create({
     required this.firstName,
     required this.lastName,
+    required this.phoneNumber,
     required this.email,
     required this.password,
     required this.passwordConfirm,
   }) {
     id = '';
     profilePicture = '';
-    coordinate = Coordinate(0, 0);
+    location = Location([0, 0]);
     passwordResetCode = '';
     accountStatus = false;
   }
@@ -45,24 +48,23 @@ class User extends Equatable {
         profilePicture,
         firstName,
         lastName,
+        phoneNumber,
         email,
         password,
         passwordConfirm,
-        coordinate,
+        location,
         passwordResetCode,
         accountStatus,
       ];
 }
 
-class Coordinate extends Equatable {
-  late num latitude;
-  late num longitude;
+class Location extends Equatable {
+  late List<num> coordinates;
 
-  Coordinate(
-    this.latitude,
-    this.longitude,
+  Location(
+    this.coordinates,
   );
 
   @override
-  List<Object?> get props => [latitude, longitude];
+  List<Object?> get props => [coordinates];
 }

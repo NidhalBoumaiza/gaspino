@@ -21,7 +21,7 @@ class UpdateCoordinateBloc
   _updateCoordinate(
       UpdateCoordinate event, Emitter<UpdateCoordinateState> emit) async {
     emit(UpdateCoordinateLoading());
-    final failureOrUnit = await updateCoordinateUseCase(event.coordinate);
+    final failureOrUnit = await updateCoordinateUseCase(event.location);
     failureOrUnit.fold(
       (failure) =>
           emit(UpdateCoordinateError(message: mapFailureToMessage(failure))),

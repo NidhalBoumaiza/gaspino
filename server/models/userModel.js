@@ -16,6 +16,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, "Veuillez fournir votre nom de famille !"],
   },
+  phoneNumber: {
+    type: String,
+    required: [true, "Veuillez fournir votre numéro de téléphone !"],
+  },
   email: {
     type: String,
     required: [true, "Veuillez fournir votre email !"],
@@ -37,9 +41,16 @@ const userSchema = mongoose.Schema({
     },
     message: "Veuillez confirmer votre mot de passe",
   },
-  coordinate : {
-    latitude : { type: Number, select: true },
-    longitude : { type: Number, select: true },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"], // 'location.type' must be 'Point'
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
   passwordResetCode: { type: String, select: true },
   passwordResetExpires: { type: Date, select: true },
@@ -49,10 +60,9 @@ const userSchema = mongoose.Schema({
   },
   activeAccountToken: { type: String, select: true },
   activeAccountTokenExpires: { type: Date, select: true },
-  
 });
 //--------------- MIDDLEWERE -----------------------
-/// ta3mel error hathi 
+/// ta3mel error hathi
 // userSchema.pre(/^find/, async function (next) {
 //   this.find({ accountStatus: { $ne: false } });
 //   next();
@@ -69,8 +79,6 @@ const userSchema = mongoose.Schema({
 //   next();
 // });
 
-
-
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -80,11 +88,7 @@ userSchema.pre("save", async function (next) {
 
 //----------- METHODS -----------
 // 1 ) correctPassword
-userSchema.methods.correctPassword = async function (
-  userpassword,
-  password
-) {
-  
+userSchema.methods.correctPassword = async function (userpassword, password) {
   return await bcrypt.compare(userpassword, password);
 };
 // 2 ) changePasswordAfter
@@ -102,11 +106,11 @@ userSchema.methods.correctPassword = async function (
 // };
 // 3 ) createPasswordResetCode
 userSchema.methods.createPasswordResetCode = function () {
-  const code = Math.floor(1000 + Math.random() * 9000) ; 
+  const code = Math.floor(1000 + Math.random() * 9000);
   this.passwordResetCode = code.toString();
   this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
-  return code.toString() ;
-}
+  return code.toString();
+};
 // 4 ) Active user Token :
 userSchema.methods.createActiveUserToken = function () {
   const Token = crypto.randomBytes(32).toString("hex");
@@ -116,4 +120,3 @@ userSchema.methods.createActiveUserToken = function () {
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
-

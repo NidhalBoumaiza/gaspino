@@ -9,7 +9,7 @@ class UpdateCoordinateUseCase {
 
   UpdateCoordinateUseCase(this.userRepository);
 
-  Future<Either<Failure, Unit>> call(Coordinate coordinate) async {
-    return await userRepository.updateCoordinate(coordinate);
+  Future<Either<Failure, Unit>> call(Location location) async {
+    return await userRepository.updateLocation(location);
   }
 }

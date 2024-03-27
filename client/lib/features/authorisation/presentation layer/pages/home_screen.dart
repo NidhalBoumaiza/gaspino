@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         BlocProvider.of<UpdateCoordinateBloc>(context).add(
                           UpdateCoordinate(
-                            coordinate: Coordinate(45.0, 55.0),
+                            location: Location([50.00, 50.0]),
                           ),
                         );
                       },

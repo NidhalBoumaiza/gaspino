@@ -3,10 +3,10 @@ part of 'update_coordinate_bloc.dart';
 abstract class UpdateCoordinateEvent extends Equatable {}
 
 class UpdateCoordinate extends UpdateCoordinateEvent {
-  Coordinate coordinate;
+  Location location;
 
-  UpdateCoordinate({required this.coordinate});
+  UpdateCoordinate({required this.location});
 
   @override
-  List<Object?> get props => [coordinate];
+  List<Object?> get props => [location];
 }

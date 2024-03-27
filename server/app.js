@@ -9,7 +9,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const app = express();
 const bodyParser = require('body-parser');
-
+const cronTasks = require("./utils/cronTasks");
 //------------ROUTES----------------
 const userRouter = require("./routes/userRouter");
 
@@ -39,7 +39,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
+// 2) CRON JOBS
+cronTasks.updateProductStatus();
 
 // 3) ROUTES
 

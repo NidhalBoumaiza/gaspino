@@ -45,7 +45,6 @@ const filtredObj = (obj, ...allowedFields) => {
 //   });
 // });
 
-
 //*********************************************************************** */ */
 //----------------------------disable my account ----------------------------------
 exports.disableMyAccount = catchAsync(async (req, res, next) => {
@@ -59,15 +58,14 @@ exports.disableMyAccount = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMyLocation = catchAsync(async (req, res, next) => {
-  
-  req.user.coordinate = req.body.coordinate;
+  console.log(req.body.location.coordinates);
+  req.user.location = {
+    type: "Point",
+    coordinates: req.body.location.coordinates,
+  };
   await req.user.save({ validateBeforeSave: false });
   console.log(req.user);
   res.status(201).json({
     status: "Success",
-  }); 
-}
-);
-
-
-
+  });
+});

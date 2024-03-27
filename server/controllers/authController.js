@@ -55,6 +55,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   newAccount = await User.create({
         profilePicture: req.body.profilePicture ,
         email: req.body.email,
+        phoneNumber : req.body.phoneNumber,
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm,
         firstName: req.body.firstName,
@@ -175,9 +176,9 @@ try {
   decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 } catch (err) {
   if (err instanceof jwt.TokenExpiredError) {
-    return next(new AppError('Votre session a expiré! Veuillez vous reconnecter.', 401));
+    return next(new AppError('Votre session a expiré! Veuillez vous reconnecter.', 410));
   } else {
-    return next(new AppError('Erreur lors de la vérification du token.', 401));
+    return next(new AppError('Erreur lors de la vérification du token.', 410));
   }
 }
 // 3) vérifier si l'utilisateur existe toujours dans la base de données ou non :

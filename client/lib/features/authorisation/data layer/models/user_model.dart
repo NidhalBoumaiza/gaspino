@@ -6,10 +6,11 @@ class UserModel extends User {
     String profilePicture,
     String firstName,
     String lastName,
+    String PhoneNumber,
     String email,
     String password,
     String passwordConfirm,
-    Coordinate coordinate,
+    Location location,
     String passwordResetCode,
     bool accountStatus,
   ) : super(
@@ -17,10 +18,11 @@ class UserModel extends User {
           profilePicture,
           firstName,
           lastName,
+          PhoneNumber,
           email,
           password,
           passwordConfirm,
-          coordinate,
+          location,
           passwordResetCode,
           accountStatus,
         );
@@ -31,16 +33,16 @@ class UserModel extends User {
       json['profilePicture'] ?? '',
       json['firstName'] ?? '',
       json['lastName'] ?? '',
+      json['phoneNumber'] ?? '',
       json['email'] ?? '',
       json['password'] ?? '',
       json['passwordConfirm'] ?? '',
-      Coordinate(
-        json['coordinate'] != null
-            ? json['coordinate']['latitude'] ?? 0.0
-            : 0.0,
-        json['coordinate'] != null
-            ? json['coordinate']['longitude'] ?? 0.0
-            : 0.0,
+      Location(
+        json['location'] != null
+            ? (json['location']['coordinates'] as List<dynamic>)
+                .map((e) => num.parse(e.toString()))
+                .toList()
+            : [0.0, 0.0],
       ),
       json['passwordResetCode'] ?? '',
       json['accountStatus'] ?? false,
@@ -53,12 +55,12 @@ class UserModel extends User {
       'profilePicture': profilePicture,
       'firstName': firstName,
       'lastName': lastName,
+      'phoneNumber': phoneNumber,
       'email': email,
       'password': password,
       'passwordConfirm': passwordConfirm,
-      'coordinate': {
-        'latitude': coordinate.latitude,
-        'longitude': coordinate.longitude,
+      'location': {
+        'coordinates': location.coordinates,
       },
       'passwordResetCode': passwordResetCode,
       'accountStatus': accountStatus,

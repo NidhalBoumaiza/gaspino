@@ -27,10 +27,11 @@ class UserRepositoryImpl implements UserRepository {
       user.profilePicture ?? "",
       user.firstName,
       user.lastName,
+      user.phoneNumber,
       user.email,
       user.password,
       user.passwordConfirm,
-      user.coordinate ?? Coordinate(0, 0),
+      user.location ?? Location([0.0, 0.0]),
       user.passwordResetCode ?? "",
       user.accountStatus ?? false,
     );
@@ -139,10 +140,10 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> updateCoordinate(Coordinate coordinate) async {
+  Future<Either<Failure, Unit>> updateLocation(Location location) async {
     if (await networkInfo.isConnected) {
       try {
-        await userRemoteDataSource.updateCoordinate(coordinate);
+        await userRemoteDataSource.updateLocation(location);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());

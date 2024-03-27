@@ -20,7 +20,7 @@ abstract class UserRepository {
   Future<Either<Failure, Unit>> updateUserPassword(
       String oldPassword, String newPassword, String newPasswordConfirm);
 
-  Future<Either<Failure, Unit>> updateCoordinate(Coordinate coordinate);
+  Future<Either<Failure, Unit>> updateLocation(Location location);
 
   Future<Either<Failure, Unit>> disableMyAccount();
 
