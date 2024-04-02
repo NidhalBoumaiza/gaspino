@@ -19,6 +19,7 @@ const userSchema = mongoose.Schema({
   phoneNumber: {
     type: String,
     required: [true, "Veuillez fournir votre numéro de téléphone !"],
+    unique: true,
   },
   email: {
     type: String,
@@ -45,12 +46,14 @@ const userSchema = mongoose.Schema({
     type: {
       type: String,
       enum: ["Point"], // 'location.type' must be 'Point'
-      required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
     },
+  },
+  income: {
+    type: Number,
+    default: 0,
   },
   passwordResetCode: { type: String, select: true },
   passwordResetExpires: { type: Date, select: true },

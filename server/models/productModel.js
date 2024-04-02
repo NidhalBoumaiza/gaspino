@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 const productSchema = mongoose.Schema({
-  productPicture: {
-    type: String,
+  productPictures: {
+    type: [String],
     default: `defaultProduct${Math.floor(Math.random() * 4) + 1}.jpg`,
   },
   name: {
@@ -34,7 +34,6 @@ const productSchema = mongoose.Schema({
     },
   },
   recoveryDate: {
-    ///// date ynajjem ykoun wa9t wahed willa barcha aw9at
     type: [Date],
     required: [
       true,
@@ -67,8 +66,18 @@ const productSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
-
+productSchema.pre(/^find/, function (next) {
+  this.populate(
+    "productOwner",
+    "-password -passwordResetCode -passwordResetExpires -accountStatus -activeAccountToken -activeAccountTokenExpires"
+  );
+  next();
+});
 productSchema.index({ location: "2dsphere" });
 
 const Product = mongoose.model("Product", productSchema);

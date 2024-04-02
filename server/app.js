@@ -8,11 +8,12 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const app = express();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const cronTasks = require("./utils/cronTasks");
 //------------ROUTES----------------
 const userRouter = require("./routes/userRouter");
-
+const productRouter = require("./routes/productRouter");
+const commandeRouter = require("./routes/commandeRouter");
 //------------------------------
 app.use(cors());
 app.use(xss());
@@ -45,8 +46,8 @@ cronTasks.updateProductStatus();
 // 3) ROUTES
 
 app.use("/api/v1/users", userRouter);
-
-
+app.use("/api/v1/products", productRouter);
+app.use("/api/v1/commandes", commandeRouter);
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });

@@ -4,7 +4,7 @@ const validator = require("validator");
 const commandeSchema = mongoose.Schema({
   products: [
     {
-      product: {
+      productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
@@ -12,18 +12,18 @@ const commandeSchema = mongoose.Schema({
         type: Number,
         required: [true, "Veuillez fournir une quantité pour le produit"],
       },
-      produitStatus: {
+      ordredProduitStatus: {
         type: String,
-        enum: ["pending", "accepted", "rejected"],
+        enum: ["pending", "delivered", "refused"],
         default: "pending",
       },
-      recoveryDate: {
-        type: Date,
-        required: [
-          true,
-          "Veuillez fournir une date de récupération pour le produit",
-        ],
-      },
+      // recoveryDate: {
+      //   type: Date,
+      //   required: [
+      //     true,
+      //     "Veuillez fournir une date de récupération pour le produit",
+      //   ],
+      // },
     },
   ],
   commandeStatus: {
@@ -35,6 +35,21 @@ const commandeSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+});
+
+commandeSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "products.productId",
+    select: "name priceAfterReduction quantity",
+  }).populate({
+    path: "commandeOwner",
+    select: "firstName lastName phoneNumber email",
+  });
+  next();
 });
 
 const Commande = mongoose.model("Commande", commandeSchema);

@@ -12,9 +12,13 @@ const signToken = function (id) {
 };
 
 const generateRefreshToken = (userId) => {
-  const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN,
-  });
+  const refreshToken = jwt.sign(
+    { id: userId },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN,
+    }
+  );
   return refreshToken;
 };
 //---------------------------------------------
@@ -32,36 +36,40 @@ createSendToken = (user, statuscode, res) => {
 };
 //-----------------------------------------
 
-
 //----------- Sign Up ---------------------
 
 exports.signUp = catchAsync(async (req, res, next) => {
   let newAccount = null;
-  
-  if (!req.body.email || !req.body.password || !req.body.passwordConfirm || !req.body.firstName || !req.body.lastName){
+  console.log(req.body);
+  if (
+    !req.body.email ||
+    !req.body.password ||
+    !req.body.passwordConfirm ||
+    !req.body.firstName ||
+    !req.body.lastName
+  ) {
     return next(
       new AppError(
         "Veuillez saisir votre e-mail, mot de passe, prénom et nom !",
         400
-      ));
+      )
+    );
   }
- 
-  
-  newAccount = await User.findOne ({email: req.body.email});
-   if  (newAccount){
+
+  newAccount = await User.findOne({ email: req.body.email });
+  if (newAccount) {
     return next(new AppError("Cet e-mail est déjà utilisé !", 400));
-   }
-   if (req.file) req.body.profilePicture = req.file.filename;
+  }
+  if (req.file) req.body.profilePicture = req.file.filename;
   newAccount = await User.create({
-        profilePicture: req.body.profilePicture ,
-        email: req.body.email,
-        phoneNumber : req.body.phoneNumber,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-      });
-  
+    profilePicture: req.body.profilePicture,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+  });
 
   const activeToken = newAccount.createActiveUserToken();
   newAccount.activeAccountToken = activeToken;
@@ -104,7 +112,7 @@ exports.activeAccount = catchAsync(async (req, res, next) => {
     activeAccountToken: token,
   });
   if (!user) {
-    return next(new AppError("Le jeton n'est pas valide !" , 401));
+    return next(new AppError("Le jeton n'est pas valide !", 401));
   }
   if (Date.now() > user.activeAccountTokenExpires) {
     await User.findOneAndDelete({ activeAccountToken: token });
@@ -126,7 +134,9 @@ exports.activeAccount = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(new AppError("Veuillez fournir votre email et mot de passe", 400));
+    return next(
+      new AppError("Veuillez fournir votre email et mot de passe", 400)
+    );
   }
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
@@ -135,20 +145,28 @@ exports.login = catchAsync(async (req, res, next) => {
   if (user && !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Email ou mot de passe incorrect", 400));
   }
-  if (user.accountStatus == false  && user.activeAccountTokenExpires > Date.now()) {
+  if (
+    user.accountStatus == false &&
+    user.activeAccountTokenExpires > Date.now()
+  ) {
     return next(
-      new AppError("Votre compte n'est pas encore activé !\activer votre comptre pour login", 401)
+      new AppError(
+        "Votre compte n'est pas encore activé !activer votre comptre pour login",
+        401
+      )
     );
   }
   if (!user.accountStatus && user.activeAccountTokenExpires < Date.now()) {
     await User.findByIdAndDelete({ _id: user._id });
     return next(
-      new AppError("Vous n'avez pas activez votre compte et le code est invalide maintenant . Vous devez inscrire à nouveau !", 401)
+      new AppError(
+        "Vous n'avez pas activez votre compte et le code est invalide maintenant . Vous devez inscrire à nouveau !",
+        401
+      )
     );
   }
 
   createSendToken(user, 200, res);
-  
 });
 //-----------------------------------------
 exports.protect = catchAsync(async (req, res, next) => {
@@ -171,21 +189,25 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   // 2) vérifier si le token est valide ou non :
-let decoded;
-try {
-  decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-} catch (err) {
-  if (err instanceof jwt.TokenExpiredError) {
-    return next(new AppError('Votre session a expiré! Veuillez vous reconnecter.', 410));
-  } else {
-    return next(new AppError('Erreur lors de la vérification du token.', 410));
+  let decoded;
+  try {
+    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return next(
+        new AppError("Votre session a expiré! Veuillez vous reconnecter.", 410)
+      );
+    } else {
+      return next(
+        new AppError("Erreur lors de la vérification du token.", 410)
+      );
+    }
   }
-}
-// 3) vérifier si l'utilisateur existe toujours dans la base de données ou non :
-const currentUser = await User.findById(decoded.id);
-if (!currentUser) {
-  return next(new AppError("L'utilisateur n'existe plus!", 410));
-}
+  // 3) vérifier si l'utilisateur existe toujours dans la base de données ou non :
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new AppError("L'utilisateur n'existe plus!", 410));
+  }
   req.user = currentUser;
   next();
 });
@@ -238,16 +260,14 @@ exports.resetPasswordStepOne = catchAsync(async (req, res, next) => {
     passwordResetCode: req.body.passwordResetCode,
     passwordResetExpires: { $gt: Date.now() },
   });
-  
+
   if (!account) {
-    return next(new AppError("Le Code est invalide ou a expiré !! " , 400) );
+    return next(new AppError("Le Code est invalide ou a expiré !! ", 400));
   }
- 
+
   res.status(200).json({
     status: "success",
   });
-
-  
 });
 //----------------------------------------
 exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
@@ -256,9 +276,14 @@ exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
   });
 
   if (!account) {
-    return next(new AppError("Le Code est invalide ou a expiré !! " , 400), );
+    return next(new AppError("Le Code est invalide ou a expiré !! ", 400));
   }
-  if (req.body.password === null || req.body.passwordConfirm === null || req.body.password === "" || req.body.passwordConfirm === "") {
+  if (
+    req.body.password === null ||
+    req.body.passwordConfirm === null ||
+    req.body.password === "" ||
+    req.body.passwordConfirm === ""
+  ) {
     return next(
       new AppError(
         "Veuillez saisir votre mot de passe et confirmer votre mot de passe !"
@@ -267,12 +292,12 @@ exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (req.body.password !== req.body.passwordConfirm ) {
+  if (req.body.password !== req.body.passwordConfirm) {
     return next(
       new AppError(
-        "Les mots de passe ne correspondent pas ! veuillez saisir les mêmes mots de passe !"
-      ,400),
-      
+        "Les mots de passe ne correspondent pas ! veuillez saisir les mêmes mots de passe !",
+        400
+      )
     );
   }
 
@@ -284,8 +309,6 @@ exports.resetPasswordStepTwo = catchAsync(async (req, res, next) => {
   // -- Modify the passwordModifyAt propertie
   // loged the user In :
   createSendToken(account, 200, res);
-  
-  
 });
 //------------------------------------
 exports.updateUserPassword = catchAsync(async (req, res, next) => {
@@ -293,7 +316,7 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
     _id: req.user.id,
   }).select("+password");
   if (
-    !(await account.correctPassword(req.body.oldPassword , account.password))
+    !(await account.correctPassword(req.body.oldPassword, account.password))
   ) {
     return next(
       new AppError(
@@ -306,17 +329,18 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
   if (await account.correctPassword(req.body.newPassword, account.password)) {
     return next(
       new AppError(
-        "Saisir une autre mot de passe differnt de votre ancien mot de passe ! " , 400
-      ),
+        "Saisir une autre mot de passe differnt de votre ancien mot de passe ! ",
+        400
+      )
     );
   }
 
-  if (await req.body.newPassword !== req.body.newPasswordConfirm) {
+  if ((await req.body.newPassword) !== req.body.newPasswordConfirm) {
     return next(
       new AppError(
-        "Les mots de passe ne correspondent pas ! veuillez confirmer votre mot de passe !"
-      ,400),
-      
+        "Les mots de passe ne correspondent pas ! veuillez confirmer votre mot de passe !",
+        400
+      )
     );
   }
 
@@ -339,22 +363,22 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
 exports.refreshToken = catchAsync(async (req, res, next) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    return next(new AppError('Aucun jeton de rafraîchissement fourni', 400));
+    return next(new AppError("Aucun jeton de rafraîchissement fourni", 400));
   }
 
   const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
   const user = await User.findById(decoded.id);
 
   if (!user) {
-    return next(new AppError('Jeton de rafraîchissement invalide', 401));
+    return next(new AppError("Jeton de rafraîchissement invalide", 401));
   }
 
   const newAccessToken = signToken(user._id);
   const newRefreshToken = generateRefreshToken(user._id);
 
-    res.status(200).json({
-    status: 'success',
+  res.status(200).json({
+    status: "success",
     accessToken: newAccessToken,
-    refreshToken: newRefreshToken
+    refreshToken: newRefreshToken,
   });
 });

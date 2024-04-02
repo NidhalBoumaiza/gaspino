@@ -2,12 +2,22 @@ const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const path = require("path");
+const fs = require("fs");
+const {
+  deleteImageProductFromFolder,
+} = require("../utils/deleteImageFromFolder");
 
 exports.addProduct = catchAsync(async (req, res, next) => {
   let newProduct = null;
-  if (req.file) req.body.productPicture = req.file.filename;
+  req.body.images = [];
+  if (req.files) {
+    for (let i = 0; i < req.files.length; i++) {
+      req.body.images.push(req.files[i].filename);
+    }
+  }
   newProduct = await Product.create({
-    productPicture: req.body.productPicture,
+    productPictures: req.body.images,
     name: req.body.name,
     description: req.body.description,
     priceBeforeReduction: req.body.priceBeforeReduction,
@@ -16,7 +26,10 @@ exports.addProduct = catchAsync(async (req, res, next) => {
     expirationDate: req.body.expirationDate,
     recoveryDate: req.body.recoveryDate,
     productOwner: req.user.id,
-    coordinate: req.body.coordinate,
+    location: {
+      type: "Point",
+      coordinates: JSON.parse(req.body.coordinates),
+    },
   });
 
   res.status(201).json({
@@ -27,12 +40,41 @@ exports.addProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMyProducts = catchAsync(async (req, res, next) => {
+  const products = await Product.find({ productOwner: req.user.id });
+  if (products.length === 0) {
+    return next(new AppError("Vous n'avez pas encore de produits", 400));
+  }
+  res.status(200).json({
+    status: "success",
+    ProductNumber: products.length,
+    data: {
+      products,
+    },
+  });
+});
+
 exports.updateProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new AppError("Aucun produit trouvé", 400));
   }
-  if (req.file) req.body.profilePicture = req.file.filename;
+  req.body.productPictures = JSON.parse(req.body.productPictures);
+
+  if (req.files) {
+    for (let i = 0; i < req.files.length; i++) {
+      req.body.productPictures.push(req.files[i].filename);
+    }
+  }
+
+  imagestoDelete = [];
+
+  product.productPictures.forEach((image) => {
+    if (!req.body.productPictures.includes(image)) {
+      imagestoDelete.push(image);
+    }
+  });
+  deleteImageProductFromFolder(imagestoDelete);
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -54,12 +96,15 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   if (!product) {
     return next(new AppError("Aucun produit trouvé", 400));
   }
+  if (product.productPictures.length > 0) {
+    deleteImageProductFromFolder(product.productPictures);
+  }
+
   await Product.findByIdAndDelete(req.params.id);
   res.status(204).json({
     status: "success",
     data: null,
   });
-  
 });
 
 exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
@@ -68,9 +113,8 @@ exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
     req.user.location.coordinates[1],
   ];
 
-  // Maximum distance in meters (for example, 5000 meters = 5 kilometers)
   const maxDistance = req.query.distance || 5000;
-
+  console.log(maxDistance);
   const products = await Product.find({
     location: {
       $near: {
@@ -87,34 +131,38 @@ exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
+    productsNumber: products.length,
     data: {
       products,
     },
   });
 });
 
-exports.getMyProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find({ productOwner: req.user.id });
-  if (products.length === 0) {
-    return next(new AppError("Vous n'avez pas encore de produits", 400));
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      products,
-    },
+exports.searchProductByName = catchAsync(async (req, res, next) => {
+  const products = await Product.find({
+    name: { $regex: `^${req.query.productName}`, $options: "i" },
   });
-});
-
-exports.getProductsByName = catchAsync(async (req, res, next) => {
-  const products = await Product.find({ name: req.params.name });
   if (products.length === 0) {
     return next(new AppError("Aucun produit trouvé", 400));
   }
   res.status(200).json({
     status: "success",
+    productsNumber: products.length,
     data: {
       products,
+    },
+  });
+});
+
+exports.getProductById = catchAsync(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new AppError("Aucun produit trouvé", 400));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      product,
     },
   });
 });

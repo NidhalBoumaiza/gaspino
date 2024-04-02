@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const Product = require("../models/productModel"); // adjust the path to your product model
 
 exports.updateProductStatus = () => {
-  cron.schedule("0 * * * *", async function () {
+  cron.schedule("2 * * * *", async function () {
+    console.log("Running cron job to update product statuses");
     const now = new Date();
 
     const expiredProducts = await Product.find({
@@ -11,7 +12,7 @@ exports.updateProductStatus = () => {
     });
 
     for (let product of expiredProducts) {
-      product.productStatus = true;
+      product.Expired = true;
       await product.save();
     }
 

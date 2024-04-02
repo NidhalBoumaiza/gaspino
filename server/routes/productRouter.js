@@ -8,6 +8,36 @@ router
   .route("/addProduct")
   .post(
     authController.protect,
-    uploadd.uploadPicture,
+    uploadd.uploadMultiplePicture,
     productController.addProduct
   );
+
+router
+  .route("/getMyProducts/")
+  .get(authController.protect, productController.getMyProducts);
+
+router
+  .route("/updateMyProduct/:id")
+  .patch(
+    authController.protect,
+    uploadd.uploadMultiplePicture,
+    productController.updateProduct
+  );
+
+router
+  .route("/deleteMyProduct/:id")
+  .delete(authController.protect, productController.deleteProduct);
+
+router
+  .route("/getPoductsWithinDistance/")
+  .get(authController.protect, productController.getAllProductsWithDistance);
+
+router
+  .route("/searchProductByName/")
+  .get(authController.protect, productController.searchProductByName);
+
+router
+  .route("/getProductById/:id")
+  .get(authController.protect, productController.getProductById);
+
+module.exports = router;
