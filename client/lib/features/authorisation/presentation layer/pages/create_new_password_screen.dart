@@ -10,7 +10,8 @@ import '../../../../core/utils/navigation_with_transition.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
-import '../../../../core/widgets/simple_app_bar.dart';
+import '../cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
+import '../cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 
 class CreateNewPasswordScreen extends StatelessWidget {
   String resetCode;
@@ -34,7 +35,6 @@ class CreateNewPasswordScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           extendBodyBehindAppBar: true,
-          appBar: simpleAppBar(),
           body: Container(
             width: 1.sw,
             height: 1.sh,
@@ -60,7 +60,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                   SizedBox(height: 5.h),
                   ReusableText(
                     text:
-                        "ce mot de passe doit être une différence de l'ancien mot de passe",
+                        "N'hésiter pas de saisir une mot de passe bien sécurisé pour la sécurité de votre compte.",
                     textSize: 12.sp,
                   ),
                   SizedBox(height: 20.h),
@@ -69,21 +69,58 @@ class CreateNewPasswordScreen extends StatelessWidget {
                       key: _formKey,
                       child: Column(
                         children: [
-                          ReusableTextFieldWidget(
-                            errorMessage:
-                                "Vous devez entrer votre mot de passe",
-                            hintText: "Mot de passe",
-                            controller: _passwordController,
-                            keyboardType: TextInputType.text,
-                            suffixIcon: null,
+                          BlocBuilder<ResetPasswordVisibilityCubit,
+                              ResetPasswordVisibilityState>(
+                            builder: (context, state) {
+                              return ReusableTextFieldWidget(
+                                errorMessage:
+                                    "Vous devez entrer un mot de passe",
+                                obsecureText: !state.isVisible,
+                                controller: _passwordController,
+                                hintText: "mot de passe",
+                                onPressedSuffixIcon: () {
+                                  context
+                                      .read<ResetPasswordVisibilityCubit>()
+                                      .changeVisibility();
+                                },
+                                suffixIcon: state.isVisible
+                                    ? const Icon(
+                                        Icons.visibility,
+                                        color: Colors.grey,
+                                      )
+                                    : const Icon(
+                                        Icons.visibility_off,
+                                        color: Colors.grey,
+                                      ),
+                              );
+                            },
                           ),
-                          ReusableTextFieldWidget(
-                            errorMessage:
-                                "Vous devez confirmer votre mot de passe",
-                            hintText: "Confirmer mot de passe",
-                            controller: _confirmPasswordController,
-                            keyboardType: TextInputType.text,
-                            suffixIcon: null,
+                          BlocBuilder<ResetConfirmPasswordVisibilityCubit,
+                              ResetConfirmPasswordVisibilityState>(
+                            builder: (context, state) {
+                              return ReusableTextFieldWidget(
+                                errorMessage:
+                                    "Vous devez confirmer votre mot de passe",
+                                obsecureText: !state.isVisible,
+                                controller: _confirmPasswordController,
+                                hintText: "Confirmer mot de passe",
+                                onPressedSuffixIcon: () {
+                                  context
+                                      .read<
+                                          ResetConfirmPasswordVisibilityCubit>()
+                                      .changeVisibility();
+                                },
+                                suffixIcon: state.isVisible
+                                    ? const Icon(
+                                        Icons.visibility,
+                                        color: Colors.grey,
+                                      )
+                                    : const Icon(
+                                        Icons.visibility_off,
+                                        color: Colors.grey,
+                                      ),
+                              );
+                            },
                           ),
                         ],
                       ),

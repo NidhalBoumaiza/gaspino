@@ -15,7 +15,10 @@ import 'features/authorisation/presentation layer/bloc/reset_password_step_two_b
 import 'features/authorisation/presentation layer/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/update_coordinate_bloc/update_coordinate_bloc.dart';
+import 'features/authorisation/presentation layer/cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
+import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
+import 'features/authorisation/presentation layer/pages/account_creation_screen.dart';
 import 'features/authorisation/presentation layer/pages/sign_in_screen.dart';
 import 'injection_container.dart' as di;
 
@@ -47,7 +50,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<UpdateCoordinateBloc>()),
         BlocProvider(create: (context) => di.sl<SignOutBloc>()),
         BlocProvider(create: (create) => di.sl<UpdateUserPasswordBloc>()),
-        BlocProvider(create: (create) => di.sl<PasswordVisibilityCubit>())
+        BlocProvider(create: (create) => di.sl<PasswordVisibilityCubit>()),
+        BlocProvider(create: (create) => di.sl<ResetPasswordVisibilityCubit>()),
+        BlocProvider(
+            create: (create) => di.sl<ResetConfirmPasswordVisibilityCubit>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
@@ -61,7 +67,7 @@ class MyApp extends StatelessWidget {
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                 useMaterial3: true,
               ),
-              home: SignInScreen(),
+              home: AccountCreationScreen(),
               getPages: routes,
             );
           }),

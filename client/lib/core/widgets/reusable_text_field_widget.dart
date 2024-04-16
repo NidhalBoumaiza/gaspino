@@ -31,7 +31,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        maxLength: maxLenghtProperty ?? null,
+        maxLength: maxLenghtProperty,
         textAlign: textAlignProperty ?? TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         obscureText: obsecureText ?? false,
@@ -46,7 +46,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
           counterText: "",
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: hintText == 'mot de passe'
+          suffixIcon: obsecureText != null
               ? IconButton(
                   onPressed: onPressedSuffixIcon,
                   icon: (suffixIcon) ??
