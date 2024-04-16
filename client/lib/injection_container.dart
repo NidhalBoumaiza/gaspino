@@ -26,11 +26,13 @@ import 'features/authorisation/domain layer/usecases/update_user_password.dart';
 import 'features/authorisation/presentation layer/bloc/reset_password_step_two_bloc/reset_password_step_two_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/sign_out_bloc/sign_out_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/update_user_password_bloc/update_user_password_bloc.dart';
+import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(() => PasswordVisibilityCubit());
   sl.registerFactory(() => SignInBloc(signIn: sl()));
   sl.registerFactory(() => ForgetPasswordBloc(forgetPassword: sl()));
   sl.registerFactory(() => DisableAccountBloc(disableAccount: sl()));

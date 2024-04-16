@@ -69,3 +69,4 @@ exports.updateMyLocation = catchAsync(async (req, res, next) => {
     status: "Success",
   });
 });
+

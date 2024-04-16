@@ -22,7 +22,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     emit(SignInLoading());
     await Future.delayed(Duration(seconds: 2));
     final failureOrUser = await signIn(event.email, event.password);
-
+    print('failureOrUser: $failureOrUser');
     failureOrUser.fold(
       (failure) => emit(SignInError(message: mapFailureToMessage(failure))),
       (user) => emit(SignInSuccess(user: user)),

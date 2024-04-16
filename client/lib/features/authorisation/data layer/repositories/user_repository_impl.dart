@@ -58,6 +58,8 @@ class UserRepositoryImpl implements UserRepository {
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
       }
     } else {
       return Left(OfflineFailure());

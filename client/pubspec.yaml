@@ -27,6 +27,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   dartz: ^0.10.1
   flutter_dotenv: ^5.1.0
+  google_fonts: ^6.2.0
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +48,7 @@ flutter:
 #  fonts:
 #    - family: Times
 #      fonts:
-#        - asset: fonts/Times/times new roman.ttf
+#        - asset: fonts/Poppins/times new roman.ttf
 #          weight: 300
 #        - asset: fonts/Times/times new roman bold.ttf
 #          weight: 800
