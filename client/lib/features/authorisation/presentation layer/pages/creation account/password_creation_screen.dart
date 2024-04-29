@@ -1,24 +1,23 @@
-// ignore_for_file: must_be_immutable
-
-import 'package:client/features/authorisation/presentation%20layer/bloc/reset_password_step_two_bloc/reset_password_step_two_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/colors.dart';
-import '../../../../core/strings.dart';
-import '../../../../core/utils/navigation_with_transition.dart';
-import '../../../../core/widgets/my_customed_button.dart';
-import '../../../../core/widgets/reusable_text.dart';
-import '../../../../core/widgets/reusable_text_field_widget.dart';
-import '../cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
-import '../cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
+import '../../../../../core/colors.dart';
+import '../../../../../core/utils/navigation_with_transition.dart';
+import '../../../../../core/widgets/my_customed_button.dart';
+import '../../../../../core/widgets/reusable_text.dart';
+import '../../../../../core/widgets/reusable_text_field_widget.dart';
+import '../../../../../core/widgets/simple_app_bar.dart';
+import '../../../domain layer/entities/user.dart';
+import '../../bloc/sign_up_bloc/sign_up_bloc.dart';
+import '../../cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
+import '../../cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 
-class CreateNewPasswordScreen extends StatelessWidget {
-  String resetCode;
+class PasswordCreationScreen extends StatelessWidget {
+  late User user;
 
-  CreateNewPasswordScreen({super.key, required this.resetCode});
+  PasswordCreationScreen({super.key, required this.user});
 
   final _formKey = GlobalKey<FormState>();
 
@@ -26,6 +25,8 @@ class CreateNewPasswordScreen extends StatelessWidget {
 
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  dynamic bytes;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
       },
       child: SafeArea(
         child: Scaffold(
+          appBar: simpleAppBar(),
           extendBodyBehindAppBar: true,
           body: Container(
             width: 1.sw,
@@ -51,9 +53,9 @@ class CreateNewPasswordScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50.h),
+                  SizedBox(height: 80.h),
                   ReusableText(
-                    text: "Créer un nouveau mot de passe",
+                    text: "Créer votre mot de passe",
                     textSize: 18.sp,
                     textFontWeight: FontWeight.w800,
                     textColor: Colors.black,
@@ -66,6 +68,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20.h),
                   Expanded(
+                    flex: 0,
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -127,20 +130,20 @@ class CreateNewPasswordScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 40.h),
                   Padding(
                     padding: EdgeInsets.only(bottom: 30.0.h),
-                    child: BlocConsumer<ResetPasswordStepTwoBloc,
-                        ResetPasswordStepTwoState>(listener: (context, state) {
-                      if (state is ResetPasswordStepTwoError) {
+                    child: BlocConsumer<SignUpBloc, SignUpState>(
+                        listener: (context, state) {
+                      if (state is SignUpError) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(state.message),
                           backgroundColor: Colors.red,
                         ));
                       }
-                      if (state is ResetPasswordStepTwoSuccess) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text(PasswordResetedSuccessMessage),
+                      if (state is SignUpSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(state.message),
                           backgroundColor: Colors.green,
                         ));
                         navigateToAnotherScreenWithSlideTransitionFromRightToLeftPushReplacement(
@@ -152,26 +155,25 @@ class CreateNewPasswordScreen extends StatelessWidget {
                       return MyCustomButton(
                         width: double.infinity,
                         height: 50.h,
-                        function: state is ResetPasswordStepTwoLoading
+                        function: state is SignUpLoading
                             ? () {}
                             : () {
-                                FocusScope.of(context).unfocus();
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<ResetPasswordStepTwoBloc>().add(
-                                      ResetPasswordStepTwoReset(
-                                          passwordResetCode: resetCode,
-                                          password: _passwordController.text,
-                                          passwordConfirm:
-                                              _confirmPasswordController.text));
+                                  user.password = _passwordController.text;
+                                  user.passwordConfirm =
+                                      _confirmPasswordController.text;
+                                  context
+                                      .read<SignUpBloc>()
+                                      .add(SignUpButtonPressed(user: user));
                                 }
                               },
                         buttonColor: primaryColorLight,
-                        text: 'réinitialiser',
+                        text: 'Créer compte',
                         circularRadious: 15.sp,
                         textButtonColor: Colors.black,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
-                        widget: state is ResetPasswordStepTwoLoading
+                        widget: state is SignUpLoading
                             ? circularProgressIndicator()
                             : const SizedBox(),
                       );

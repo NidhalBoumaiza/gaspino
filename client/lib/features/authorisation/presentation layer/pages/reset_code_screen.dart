@@ -18,7 +18,7 @@ class ResetCodeScreen extends StatelessWidget {
   ResetCodeScreen({super.key, required this.email});
 
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _codeController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +99,10 @@ class ResetCodeScreen extends StatelessWidget {
                             ));
                       }
                     }, builder: (context, state) {
-                      return myCustomedButton(
-                        double.infinity,
-                        50.h,
-                        state is ForgetPasswordLoading
+                      return MyCustomButton(
+                        width: double.infinity,
+                        height: 50.h,
+                        function: state is ForgetPasswordLoading
                             ? () {}
                             : () {
                                 FocusScope.of(context).unfocus();
@@ -114,8 +114,8 @@ class ResetCodeScreen extends StatelessWidget {
                                       );
                                 }
                               },
-                        primaryColorLight,
-                        'Verification',
+                        buttonColor: primaryColorLight,
+                        text: 'Verification',
                         circularRadious: 15.sp,
                         textButtonColor: Colors.black,
                         fontSize: 19.sp,

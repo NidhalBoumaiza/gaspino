@@ -4,21 +4,21 @@ import 'package:equatable/equatable.dart';
 abstract class Failure extends Equatable {}
 
 class OfflineFailure extends Failure {
-  static final String message = OfflineFailureMessage;
+  static const String message = OfflineFailureMessage;
 
   @override
   List<Object?> get props => [message];
 }
 
 class ServerFailure extends Failure {
-  static final String message = ServerFailureMessage;
+  static const String message = ServerFailureMessage;
 
   @override
   List<Object?> get props => [message];
 }
 
 class EmptyCacheFailure extends Failure {
-  static final String message = EmptyCacheFailureMessage;
+  static const String message = EmptyCacheFailureMessage;
 
   @override
   List<Object?> get props => [message];

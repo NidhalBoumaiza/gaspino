@@ -58,7 +58,6 @@ exports.disableMyAccount = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMyLocation = catchAsync(async (req, res, next) => {
-  console.log(req.body.location.coordinates);
   req.user.location = {
     type: "Point",
     coordinates: req.body.location.coordinates,

@@ -18,7 +18,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
     required this.controller,
     this.hintText,
     this.onPressedSuffixIcon,
-    required this.suffixIcon,
+    this.suffixIcon,
     this.obsecureText,
     this.errorMessage,
     this.keyboardType,
@@ -29,7 +29,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         maxLength: maxLenghtProperty,
         textAlign: textAlignProperty ?? TextAlign.start,

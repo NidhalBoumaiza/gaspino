@@ -4,6 +4,7 @@ import 'package:client/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/error/exceptions.dart';
@@ -44,6 +45,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Unit> signUp(UserModel userModel) async {
+    final imagePart = await http.MultipartFile.fromPath(
+      'image', // key for the API
+      userModel.profilePicture,
+      contentType: MediaType('image', 'jpg'),
+    );
     final body = {
       // TODO picture for later
       "email": userModel.email,
@@ -53,12 +59,27 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       "lastName": userModel.lastName,
       "phoneNumber": userModel.phoneNumber,
     };
-    final response = await client.post(
-      Uri.parse("${dotenv.env['URL']}/users/signup"),
-      body: body,
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          "${dotenv.env['URL']}/users/signup"), // replace with your endpoint
     );
-
+    request.fields.addAll({
+      "email": userModel.email,
+      "password": userModel.password,
+      "passwordConfirm": userModel.passwordConfirm,
+      "firstName": userModel.firstName,
+      "lastName": userModel.lastName,
+      "phoneNumber": userModel.phoneNumber,
+    });
+    request.files.add(imagePart);
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
     return handleResponse(response);
+    // final response = await client.post(
+    //   Uri.parse("${dotenv.env['URL']}/users/signup"),
+    //   body: body,
+    // );
   }
 
 //--------------------------------------------------------
@@ -117,7 +138,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       final responseBody = jsonDecode(response.body);
       final token = responseBody['token'];
       saveToken(token);
-      print(responseBody['data']['user']);
       return UserModel.fromJson(responseBody['data']['user']);
     } else if (response.statusCode == 400) {
       final responseBody = jsonDecode(response.body);
@@ -149,7 +169,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       Uri.parse("${dotenv.env['URL']}/users/updateUserPassword"),
       body: body,
       headers: {
-        "Authorization": "Bearer ${token}",
+        "Authorization": "Bearer $token",
       },
     );
 
@@ -158,21 +178,17 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Unit> updateLocation(Location location) async {
-    print("location: ${location.coordinates}");
     final body = jsonEncode({
       "location": {
         "coordinates": location.coordinates,
       },
     });
-    print(body);
     dynamic token = await this.token;
-    if (token == null) {
-      token = "";
-    }
+    token ??= "";
     final response = await client.patch(
       Uri.parse("${dotenv.env['URL']}/users/updateCoordinate"),
       headers: {
-        "Authorization": "Bearer ${token}",
+        "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
       body: body,
@@ -207,7 +223,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       final errorMessage = responseBody['message'] as String;
 
       UnauthorizedFailure.message = errorMessage;
-      throw UnauthorizedException();
+      throw const UnauthorizedException();
     } else {
       throw ServerException();
     }

@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -12,7 +14,6 @@ class ResetConfirmPasswordVisibilityCubit
   void changeVisibility() {
     print(state.isVisible);
     final isVisible = !state.isVisible;
-    print('isVisible: $isVisible');
     final updatedState =
         ResetConfirmPasswordVisibilityState(isVisible: isVisible);
     emit(updatedState);

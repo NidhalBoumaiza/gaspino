@@ -5,6 +5,7 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/reset_pa
 import 'package:client/features/authorisation/presentation%20layer/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/update_coordinate_bloc/update_coordinate_bloc.dart';
+import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -29,11 +30,14 @@ import 'features/authorisation/presentation layer/bloc/update_user_password_bloc
 import 'features/authorisation/presentation layer/cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
+import 'features/products/presentation layer/bloc/bnv cubit/bnv_cubit.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(() => BnvCubit());
+  sl.registerFactory(() => ProfilePicCreationCubit());
   sl.registerFactory(() => ResetPasswordVisibilityCubit());
   sl.registerFactory(() => ResetConfirmPasswordVisibilityCubit());
   sl.registerFactory(() => PasswordVisibilityCubit());

@@ -2,30 +2,19 @@ import '../../domain layer/entities/user.dart';
 
 class UserModel extends User {
   UserModel(
-    String id,
-    String profilePicture,
-    String firstName,
-    String lastName,
-    String PhoneNumber,
-    String email,
-    String password,
-    String passwordConfirm,
-    Location location,
-    String passwordResetCode,
-    bool accountStatus,
-  ) : super(
-          id,
-          profilePicture,
-          firstName,
-          lastName,
-          PhoneNumber,
-          email,
-          password,
-          passwordConfirm,
-          location,
-          passwordResetCode,
-          accountStatus,
-        );
+    super.id,
+    super.profilePicture,
+    super.firstName,
+    super.lastName,
+    // ignore: non_constant_identifier_names
+    super.PhoneNumber,
+    super.email,
+    super.password,
+    super.passwordConfirm,
+    super.location,
+    super.passwordResetCode,
+    super.accountStatus,
+  );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

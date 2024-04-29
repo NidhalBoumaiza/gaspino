@@ -31,11 +31,13 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     return Future.value(unit);
   }
 
+  @override
   Future<Unit> cacheToken(String token) {
     sharedPreferences.setString('token', token);
     return Future.value(unit);
   }
 
+  @override
   Future<String> getToken() {
     final token = sharedPreferences.getString('token');
     if (token != null) {

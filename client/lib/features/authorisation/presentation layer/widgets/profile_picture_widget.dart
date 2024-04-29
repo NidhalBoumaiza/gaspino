@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: camel_case_types
 class profilePictureWidget extends StatelessWidget {
   late double? widthProfilePic;
   late double? heightProfilePic;

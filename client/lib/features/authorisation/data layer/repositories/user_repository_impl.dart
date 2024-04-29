@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:client/core/error/failures.dart';
 import 'package:client/features/authorisation/domain%20layer/entities/user.dart';
 import 'package:dartz/dartz.dart';

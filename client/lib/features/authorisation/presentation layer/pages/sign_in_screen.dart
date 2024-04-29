@@ -9,7 +9,9 @@ import '../../../../core/utils/navigation_with_transition.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
+import '../../../products/presentation layer/pages/home_screen_squelette.dart';
 import '../bloc/sign_in_bloc/sign_in_bloc.dart';
+import 'creation account/account_creation_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -72,10 +74,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       child: Column(
                         children: [
                           ReusableTextFieldWidget(
+                            keyboardType: TextInputType.emailAddress,
                             errorMessage: "Vous devez entrer votre email",
                             controller: _emailController,
                             hintText: "example@gmail.com",
-                            suffixIcon: Icon(Icons.visibility),
+                            suffixIcon: const Icon(Icons.visibility),
                           ),
                           BlocBuilder<PasswordVisibilityCubit,
                               PasswordVisibilityState>(
@@ -118,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             //   '/forgetPasswordScreen',
                             // );
                             navigateToAnotherScreenWithSlideTransitionFromRightToLeft(
-                                context, ForgetPasswordScreen());
+                                context, const ForgetPasswordScreen());
                           },
                           child: ReusableText(
                             text: "Mot de passe oublié ?",
@@ -133,21 +136,23 @@ class _SignInScreenState extends State<SignInScreen> {
                     BlocConsumer<SignInBloc, SignInState>(
                         listener: (context, state) {
                       if (state is SignInSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("yayyyyyyyyyyyyyyy"),
-                          backgroundColor: Colors.green,
-                        ));
+                        navigateToAnotherScreenWithFadeTransition(
+                          context,
+                          HomeScreenSquelette(),
+                        );
                       } else if (state is SignInError) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: Colors.red,
-                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     }, builder: (context, state) {
-                      return myCustomedButton(
-                        double.infinity,
-                        50.h,
-                        state is SignInLoading
+                      return MyCustomButton(
+                        width: double.infinity,
+                        height: 50.h,
+                        function: state is SignInLoading
                             ? () {}
                             : () {
                                 FocusScope.of(context).unfocus();
@@ -158,15 +163,15 @@ class _SignInScreenState extends State<SignInScreen> {
                                           password: _passwordController.text));
                                 }
                               },
-                        primaryColorLight,
-                        'Se connecter',
+                        buttonColor: primaryColorLight,
+                        text: 'Se connecter',
                         circularRadious: 15.sp,
                         textButtonColor: Colors.black,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is SignInLoading
                             ? circularProgressIndicator()
-                            : SizedBox(),
+                            : const SizedBox(),
                       );
                     }),
                     SizedBox(height: 40.h),
@@ -183,6 +188,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         GestureDetector(
                           onTap: () {
                             FocusScope.of(context).unfocus();
+                            navigateToAnotherScreenWithSlideTransitionFromRightToLeft(
+                                context, const AccountCreationScreen());
                           },
                           child: ReusableText(
                             text: "S'inscrire",
@@ -205,7 +212,6 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 circularProgressIndicator() {
-  print('_circularProgressIndicator');
   return SizedBox(
     width: 12.w,
     height: 12.h,

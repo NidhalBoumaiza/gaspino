@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:client/core/widgets/reusable_text.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/forget_password_bloc/forget_password_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/reset_code_screen.dart';
@@ -24,8 +26,6 @@ final _formKey = GlobalKey<FormState>();
 TextEditingController _emailController = TextEditingController();
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -61,7 +61,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   SizedBox(height: 5.h),
                   ReusableText(
                     text:
-                    "Veuillez entrer l'adresse e-mail associée à votre compte et nous vous enverrons un e-mail de confirmation pour réinitialiser votre mot de passe.",
+                        "Veuillez entrer l'adresse e-mail associée à votre compte et nous vous enverrons un e-mail de confirmation pour réinitialiser votre mot de passe.",
                     textSize: 12.sp,
                   ),
                   SizedBox(height: 20.h),
@@ -80,40 +80,40 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 30.0.h),
                     child:
-                    BlocConsumer<ForgetPasswordBloc, ForgetPasswordState>(
-                        listener: (context, state) {
-                          if (state is ForgetPasswordError) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(state.message),
-                              backgroundColor: Colors.red,
-                            ));
-                          }
-                          if (state is ForgetPasswordSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(ForgetPasswordSuccessMessage),
-                              backgroundColor: Colors.green,
-                            ));
-                            navigateToAnotherScreenWithSlideTransitionFromRightToLeftPushReplacement(
-                              context,
-                              ResetCodeScreen(email: _emailController.text),
-                            );
-                          }
-                        }, builder: (context, state) {
-                      return myCustomedButton(
-                        double.infinity,
-                        50.h,
-                        state is ForgetPasswordLoading
+                        BlocConsumer<ForgetPasswordBloc, ForgetPasswordState>(
+                            listener: (context, state) {
+                      if (state is ForgetPasswordError) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(state.message),
+                          backgroundColor: Colors.red,
+                        ));
+                      }
+                      if (state is ForgetPasswordSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(ForgetPasswordSuccessMessage),
+                          backgroundColor: Colors.green,
+                        ));
+                        navigateToAnotherScreenWithSlideTransitionFromRightToLeftPushReplacement(
+                          context,
+                          ResetCodeScreen(email: _emailController.text),
+                        );
+                      }
+                    }, builder: (context, state) {
+                      return MyCustomButton(
+                        width: double.infinity,
+                        height: 50.h,
+                        function: state is ForgetPasswordLoading
                             ? () {}
                             : () {
-                          FocusScope.of(context).unfocus();
-                          if (_formKey.currentState!.validate()) {
-                            context.read<ForgetPasswordBloc>().add(
-                                ForgetPasswordRequest(
-                                    email: _emailController.text));
-                          }
-                        },
-                        primaryColorLight,
-                        'Envoyer le code',
+                                FocusScope.of(context).unfocus();
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<ForgetPasswordBloc>().add(
+                                      ForgetPasswordRequest(
+                                          email: _emailController.text));
+                                }
+                              },
+                        buttonColor: primaryColorLight,
+                        text: 'Envoyer le code',
                         circularRadious: 15.sp,
                         textButtonColor: Colors.black,
                         fontSize: 19.sp,

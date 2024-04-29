@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:client/core/utils/map_failure_to_message.dart';
 import 'package:equatable/equatable.dart';

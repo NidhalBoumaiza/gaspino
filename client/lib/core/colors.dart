@@ -10,6 +10,7 @@ const backgroundColor = Color(0xFFE0E0E0);
 const surfaceColor = Color(0xFFFFFFFF);
 const onPrimaryColor = Color(0xFFFFFFFF);
 const onSecondaryColor = Color(0xFFFFFFFF);
+const primaryTextColor = Color(0xff040003);
 
 const primaryColorLight = Color(0xFF3ddfbe);
 
