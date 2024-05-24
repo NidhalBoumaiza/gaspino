@@ -50,15 +50,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       userModel.profilePicture,
       contentType: MediaType('image', 'jpg'),
     );
-    final body = {
-      // TODO picture for later
-      "email": userModel.email,
-      "password": userModel.password,
-      "passwordConfirm": userModel.passwordConfirm,
-      "firstName": userModel.firstName,
-      "lastName": userModel.lastName,
-      "phoneNumber": userModel.phoneNumber,
-    };
+
     final request = http.MultipartRequest(
       'POST',
       Uri.parse(

@@ -6,6 +6,10 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/sign_in_
 import 'package:client/features/authorisation/presentation%20layer/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/update_coordinate_bloc/update_coordinate_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
+import 'package:client/features/products/data%20layer/repositories/product_repository_impl.dart';
+import 'package:client/features/products/domain%20layer/repositories/product_repository.dart';
+import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/cubit/product%20quantity%20cubit/product_quantity_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -30,12 +34,29 @@ import 'features/authorisation/presentation layer/bloc/update_user_password_bloc
 import 'features/authorisation/presentation layer/cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
-import 'features/products/presentation layer/bloc/bnv cubit/bnv_cubit.dart';
+import 'features/products/data layer/data sources/product_local_data_souce.dart';
+import 'features/products/data layer/data sources/product_remote_data_source.dart';
+import 'features/products/domain layer/usecases/add_product.dart';
+import 'features/products/domain layer/usecases/get_all_products_within_distance.dart';
+import 'features/products/domain layer/usecases/get_all_products_within_distance_expires_today.dart';
+import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
+import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
+import 'features/products/presentation layer/cubit/bnv cubit/bnv_cubit.dart';
+import 'features/products/presentation layer/cubit/first image cubit/first_image_cubit.dart';
+import 'features/products/presentation layer/cubit/slider cubit/slider_cubit.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(() => ProductQuantityCubit());
+  sl.registerFactory(() => (GetProductsExpiresTodayBloc(
+      getAllProductsWithinDistanceExpiresTodayUseCase: sl())));
+  sl.registerFactory(() => SliderCubit());
+  sl.registerFactory(() =>
+      GetProductsWithinDistanceBloc(getAllProductsWithinDistanceUseCase: sl()));
+  sl.registerFactory(() => FirstImageCubit());
+  sl.registerFactory(() => AddProduitBloc(addProduct: sl()));
   sl.registerFactory(() => BnvCubit());
   sl.registerFactory(() => ProfilePicCreationCubit());
   sl.registerFactory(() => ResetPasswordVisibilityCubit());
@@ -53,6 +74,10 @@ Future<void> init() async {
   sl.registerFactory(() => SignOutBloc(signOut: sl()));
   sl.registerFactory(() => UpdateUserPasswordBloc(updatePasswordUseCase: sl()));
   // Use cases
+  sl.registerLazySingleton(
+      () => GetAllProductsWithinDistanceExpiresTodayUseCase(sl()));
+  sl.registerLazySingleton(() => GetAllProductsWithinDistanceUseCase(sl()));
+  sl.registerLazySingleton(() => AddProductUseCase(sl()));
   sl.registerLazySingleton(() => SignInUseCase(sl()));
   sl.registerLazySingleton(() => ForgetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => DisableAccountUseCase(sl()));
@@ -63,6 +88,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
   sl.registerLazySingleton(() => UpdateUserPasswordUseCase(sl()));
   // Repository
+  sl.registerLazySingleton<ProductRepository>(() => ProductReopositryImpl(
+        productRemoteDataSource: sl(),
+        productLocalDataSource: sl(),
+        networkInfo: sl(),
+      ));
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(
         userRemoteDataSource: sl(),
         userLocalDataSource: sl(),
@@ -70,6 +100,12 @@ Future<void> init() async {
       ));
 
   // Data sources
+
+  sl.registerLazySingleton<ProductLocalDataSource>(
+      () => ProductLocalDataSourceImpl(sharedPreferences: sl()));
+
+  sl.registerLazySingleton<ProductRemoteDataSource>(
+      () => ProductRemoteDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<UserRemoteDataSource>(
       () => UserRemoteDataSourceImpl(client: sl()));

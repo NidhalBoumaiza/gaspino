@@ -154,6 +154,7 @@ class UserRepositoryImpl implements UserRepository {
       } on ServerMessageException {
         return Left(ServerMessageFailure());
       } on UnauthorizedException {
+        await userLocalDataSource.signOut();
         return Left(UnauthorizedFailure());
       }
     } else {

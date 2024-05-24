@@ -56,10 +56,12 @@ class MyCustomButton extends StatelessWidget {
                     letterSpacing: 0.1,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.w),
-                  child: widget ?? const SizedBox(),
-                ),
+                widget != null
+                    ? Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: widget ?? const SizedBox(),
+                      )
+                    : const SizedBox(),
               ],
             ),
           ),

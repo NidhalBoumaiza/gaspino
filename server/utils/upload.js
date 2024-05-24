@@ -32,4 +32,4 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
 exports.uploadPicture = upload.single("image");
 
-exports.uploadMultiplePicture = upload.array("images", 5);
+exports.uploadMultiplePicture = upload.array("images", 3);

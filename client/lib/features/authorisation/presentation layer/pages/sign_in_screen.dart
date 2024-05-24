@@ -1,5 +1,6 @@
 import 'package:client/features/authorisation/presentation%20layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/forget_password_screen.dart';
+import 'package:client/features/products/presentation%20layer/widgets/circularProgressiveIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +10,8 @@ import '../../../../core/utils/navigation_with_transition.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
-import '../../../products/presentation layer/pages/home_screen_squelette.dart';
 import '../bloc/sign_in_bloc/sign_in_bloc.dart';
+import 'active_location_screen.dart';
 import 'creation account/account_creation_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -78,7 +79,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             errorMessage: "Vous devez entrer votre email",
                             controller: _emailController,
                             hintText: "example@gmail.com",
-                            suffixIcon: const Icon(Icons.visibility),
                           ),
                           BlocBuilder<PasswordVisibilityCubit,
                               PasswordVisibilityState>(
@@ -138,7 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       if (state is SignInSuccess) {
                         navigateToAnotherScreenWithFadeTransition(
                           context,
-                          HomeScreenSquelette(),
+                          ActiveLocationScreen(),
                         );
                       } else if (state is SignInError) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -166,11 +166,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         buttonColor: primaryColorLight,
                         text: 'Se connecter',
                         circularRadious: 15.sp,
-                        textButtonColor: Colors.black,
+                        textButtonColor: Colors.white,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is SignInLoading
-                            ? circularProgressIndicator()
+                            ? ReusablecircularProgressIndicator(
+                                indicatorColor: Colors.white,
+                              )
                             : const SizedBox(),
                       );
                     }),
@@ -215,7 +217,7 @@ circularProgressIndicator() {
   return SizedBox(
     width: 12.w,
     height: 12.h,
-    child: const CircularProgressIndicator(
+    child: CircularProgressIndicator(
       color: Colors.black,
     ),
   );

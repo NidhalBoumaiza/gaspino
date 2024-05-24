@@ -66,7 +66,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: 103.h,
+                              height: 108.h,
                               child: Row(
                                 children: [
                                   Expanded(

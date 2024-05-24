@@ -68,3 +68,15 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     return Future.value(unit);
   }
 }
+
+
+Future getTokenn() async {
+  final SharedPreferences sharedPreferences = await SharedPreferences
+      .getInstance();
+  final token = sharedPreferences.getString('token');
+  if (token != null) {
+    return token;
+  } else {
+    return "";
+  }
+}

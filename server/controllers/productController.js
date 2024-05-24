@@ -16,6 +16,8 @@ exports.addProduct = catchAsync(async (req, res, next) => {
       req.body.images.push(req.files[i].filename);
     }
   }
+  req.body.recoveryDate = req.body.recoveryDate.replace(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6})/g, '"$1"');
+  req.body.recoveryDate = JSON.parse(req.body.recoveryDate);
   newProduct = await Product.create({
     productPictures: req.body.images,
     name: req.body.name,
@@ -34,9 +36,9 @@ exports.addProduct = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: "success",
-    data: {
+   
       newProduct,
-    },
+    
   });
 });
 
@@ -48,9 +50,9 @@ exports.getMyProducts = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     ProductNumber: products.length,
-    data: {
+    
       products,
-    },
+
   });
 });
 
@@ -85,9 +87,7 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   );
   res.status(200).json({
     status: "success",
-    data: {
       updatedProduct,
-    },
   });
 });
 
@@ -132,9 +132,48 @@ exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     productsNumber: products.length,
-    data: {
       products,
+  });
+});
+
+exports.getAllProductsWithDistanceExpiresToday = catchAsync(async (req, res, next) => {
+  const userLocation = [
+    req.user.location.coordinates[0],
+    req.user.location.coordinates[1],
+  ];
+
+  const maxDistance = req.query.distance || 5000;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  console.log(today);
+  console.log(tomorrow);
+  console.log(Date());
+  const products = await Product.find({
+    location: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: userLocation,
+        },
+        $maxDistance: maxDistance,
+      },
     },
+    expirationDate: {
+      $gte: today,
+      $lt: tomorrow,
+    },
+  });
+  
+  if (products.length === 0) {
+    return next(new AppError("Aucun produit trouvé dans votre zone", 400));
+  }
+  res.status(200).json({
+    status: "success",
+    productsNumber: products.length,
+      products,
   });
 });
 
@@ -148,9 +187,7 @@ exports.searchProductByName = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     productsNumber: products.length,
-    data: {
       products,
-    },
   });
 });
 
@@ -161,8 +198,6 @@ exports.getProductById = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    data: {
       product,
-    },
   });
 });

@@ -8,8 +8,8 @@ const bottomNavigationBarScreens = [
 ];
 
 const PagesNames = [
-  'Home',
-  'Home',
-  'Home',
-  'Home',
+  'Accueil',
+  'Mes produits',
+  'notififcation',
+  'contact',
 ];

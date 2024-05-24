@@ -12,6 +12,13 @@ class ReusableTextFieldWidget extends StatelessWidget {
   bool? obsecureText;
   String? errorMessage;
   TextInputType? keyboardType;
+  BorderSide? borderSide;
+  int? maxLines;
+  int? minLines;
+  IconData? prefixIcon;
+  void Function()? onPressedPreffixIcon;
+  Color? prefixIconColor;
+  bool? enabled;
 
   ReusableTextFieldWidget({
     super.key,
@@ -24,6 +31,13 @@ class ReusableTextFieldWidget extends StatelessWidget {
     this.keyboardType,
     this.textAlignProperty,
     this.maxLenghtProperty,
+    this.borderSide,
+    this.maxLines,
+    this.minLines,
+    this.prefixIcon,
+    this.onPressedPreffixIcon,
+    this.prefixIconColor,
+    this.enabled,
   });
 
   @override
@@ -31,11 +45,14 @@ class ReusableTextFieldWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        enabled: enabled ?? true,
+        minLines: minLines ?? 1,
+        maxLines: maxLines ?? 1,
         maxLength: maxLenghtProperty,
         textAlign: textAlignProperty ?? TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         obscureText: obsecureText ?? false,
-        controller: controller,
+        controller: controller..text,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return errorMessage ?? 'Ce champ est obligatoire';
@@ -46,18 +63,25 @@ class ReusableTextFieldWidget extends StatelessWidget {
           counterText: "",
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: obsecureText != null
+          prefixIcon: prefixIcon != null
               ? IconButton(
-                  onPressed: onPressedSuffixIcon,
-                  icon: (suffixIcon) ??
-                      const Icon(
-                        Icons.visibility,
-                        color: Colors.grey,
-                      ))
+            onPressed: onPressedPreffixIcon,
+            icon: Icon(prefixIcon),
+            color: prefixIconColor ?? null,
+          )
+              : null,
+          suffixIcon: obsecureText != null || suffixIcon != null
+              ? IconButton(
+              onPressed: onPressedSuffixIcon,
+              icon: (suffixIcon) ??
+                  const Icon(
+                    Icons.visibility,
+                    color: Colors.grey,
+                  ))
               : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0.sp),
-            borderSide: BorderSide.none,
+            borderSide: borderSide ?? BorderSide.none,
           ),
           hintText: hintText,
           hintStyle: GoogleFonts.nunito(

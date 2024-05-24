@@ -2,8 +2,9 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:client/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../bloc/bnv cubit/bnv_cubit.dart';
+import '../cubit/bnv cubit/bnv_cubit.dart';
 
 class ReusableBottomNavigationBar extends StatelessWidget {
   ReusableBottomNavigationBar({
@@ -15,16 +16,18 @@ class ReusableBottomNavigationBar extends StatelessWidget {
     return BlocBuilder<BnvCubit, BnvState>(
       builder: (context, state) {
         return AnimatedBottomNavigationBar.builder(
-          backgroundColor: primaryColor,
+          backgroundColor: Colors.white,
           shadow: BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 20,
           ),
           itemCount: 4,
           tabBuilder: (int index, bool isActive) {
-            return Icon(iconList[index],
-                size: 30,
-                color: isActive ? Colors.white : Colors.grey.shade800);
+            return Icon(
+              iconList[index],
+              size: index == 1 ? 25 : 30,
+              color: isActive ? primaryColor : Colors.grey.shade600,
+            );
           },
           activeIndex: state.currentIndex,
           gapLocation: GapLocation.center,
@@ -42,7 +45,7 @@ class ReusableBottomNavigationBar extends StatelessWidget {
 
 final List<IconData> iconList = [
   Icons.home,
-  Icons.search,
+  FontAwesomeIcons.store,
   Icons.notifications,
   Icons.person,
 ];

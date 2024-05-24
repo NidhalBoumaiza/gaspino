@@ -32,6 +32,10 @@ router
   .route("/getPoductsWithinDistance/")
   .get(authController.protect, productController.getAllProductsWithDistance);
 
+  router
+  .route("/getProductsWithinDistanceExpiresToday/")
+  .get(authController.protect, productController.getAllProductsWithDistanceExpiresToday);
+
 router
   .route("/searchProductByName/")
   .get(authController.protect, productController.searchProductByName);

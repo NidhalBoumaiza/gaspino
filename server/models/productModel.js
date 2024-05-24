@@ -35,10 +35,6 @@ const productSchema = mongoose.Schema({
   },
   recoveryDate: {
     type: [Date],
-    required: [
-      true,
-      "Veuillez fournir une date de récupération pour le produit",
-    ],
     default: () => {
       const sixPM = new Date();
       sixPM.setHours(18, 0, 0, 0);

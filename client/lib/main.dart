@@ -3,6 +3,7 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/sign_out
 import 'package:client/features/authorisation/presentation%20layer/bloc/update_user_password_bloc/update_user_password_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/forget_password_screen.dart';
+import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
 import 'package:client/features/products/presentation%20layer/pages/home_screen_squelette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/authorisation/presentation layer/bloc/forget_password_bloc/forget_password_bloc.dart';
@@ -22,7 +24,12 @@ import 'features/authorisation/presentation layer/cubit/confirm_password_visibil
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/pages/sign_in_screen.dart';
-import 'features/products/presentation layer/bloc/bnv cubit/bnv_cubit.dart';
+import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
+import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
+import 'features/products/presentation layer/cubit/bnv cubit/bnv_cubit.dart';
+import 'features/products/presentation layer/cubit/first image cubit/first_image_cubit.dart';
+import 'features/products/presentation layer/cubit/product quantity cubit/product_quantity_cubit.dart';
+import 'features/products/presentation layer/cubit/slider cubit/slider_cubit.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -39,7 +46,8 @@ void main() async {
   } else {
     screen = const SignInScreen();
   }
-  runApp(MyApp(screen: screen));
+  initializeDateFormatting('fr_FR', null)
+      .then((_) => runApp(MyApp(screen: screen)));
 }
 
 class MyApp extends StatelessWidget {
@@ -70,7 +78,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (create) => di.sl<ResetConfirmPasswordVisibilityCubit>()),
         BlocProvider(create: (create) => di.sl<ProfilePicCreationCubit>()),
-        BlocProvider(create: (create) => di.sl<BnvCubit>())
+        BlocProvider(create: (create) => di.sl<BnvCubit>()),
+        BlocProvider(create: (create) => di.sl<FirstImageCubit>()),
+        BlocProvider(create: (create) => di.sl<AddProduitBloc>()),
+        BlocProvider<GetProductsWithinDistanceBloc>(
+            create: (context) => di.sl<GetProductsWithinDistanceBloc>()),
+        BlocProvider(create: (create) => di.sl<SliderCubit>()),
+        BlocProvider(create: (create) => di.sl<GetProductsExpiresTodayBloc>()),
+        BlocProvider(create: (create) => di.sl<ProductQuantityCubit>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

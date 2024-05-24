@@ -10,6 +10,7 @@ const helmet = require("helmet");
 const app = express();
 const bodyParser = require("body-parser");
 const cronTasks = require("./utils/cronTasks");
+const path = require("path");
 //------------ROUTES----------------
 const userRouter = require("./routes/userRouter");
 const productRouter = require("./routes/productRouter");
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 cronTasks.updateProductStatus();
 
 // 3) ROUTES
+app.use("/images", express.static(path.join(__dirname, "./images")));
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
