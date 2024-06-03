@@ -83,7 +83,7 @@ class ProductReopositryImpl implements ProductRepository {
   Future<Either<Failure, Unit>> deleteMyProduct(String id) async {
     if (await networkInfo.isConnected) {
       try {
-        // await productRemoteDataSource.deleteMyProduct(id);
+        await productRemoteDataSource.deleteMyProduct(id);
 
         return const Right(unit);
       } on ServerException {
@@ -100,17 +100,21 @@ class ProductReopositryImpl implements ProductRepository {
   Future<Either<Failure, List<Product>>> getMyProducts() async {
     if (await networkInfo.isConnected) {
       try {
-        // final products = await productRemoteDataSource.getMyProducts();
-        // productLocalDataSource.cacheMyProduct(products);
-        // return Right(products);
-        return Left(ServerFailure());
+        final products = await productRemoteDataSource.getMyProducts();
+        productLocalDataSource.cacheMyProducts(products);
+        return Right(products);
       } on ServerException {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
       }
     } else {
-      return Left(OfflineFailure());
+      try {
+        final localProducts = await productLocalDataSource.getMyProducts();
+        return Right(localProducts);
+      } on EmptyCacheException {
+        return Left(EmptyCacheFailure());
+      }
     }
   }
 
@@ -173,6 +177,23 @@ class ProductReopositryImpl implements ProductRepository {
       } on EmptyCacheException {
         return Left(EmptyCacheFailure());
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Product>>> refreshMyProducts() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final products = await productRemoteDataSource.getMyProducts();
+        productLocalDataSource.cacheMyProducts(products);
+        return Right(products);
+      } on ServerException {
+        return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
     }
   }
 }

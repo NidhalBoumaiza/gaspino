@@ -24,7 +24,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   @override
   Future<Unit> cacheMyProducts(List<ProductModel> products) {
     final productsToJson = products.map((product) => product.toJson()).toList();
-    final productsJson = productsToJson.toString();
+    final productsJson = jsonEncode(productsToJson); // Correctly encode to JSON
     sharedPreferences.setString('myProducts', productsJson);
     return Future.value(unit);
   }
@@ -41,8 +41,10 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   Future<List<ProductModel>> getMyProducts() {
     final myProductsJson = sharedPreferences.getString('myProducts');
     if (myProductsJson != null) {
-      final decodeJson = json.decode(myProductsJson);
-      final jsonToProducts = List<ProductModel>.from(decodeJson);
+      final decodeJson = json.decode(myProductsJson) as List;
+      final jsonToProducts = decodeJson
+          .map((productJson) => ProductModel.fromJson(productJson))
+          .toList();
       return Future.value(jsonToProducts);
     } else {
       throw EmptyCacheException();

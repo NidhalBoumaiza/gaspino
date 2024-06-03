@@ -44,7 +44,7 @@ const commandeSchema = mongoose.Schema({
 commandeSchema.pre(/^find/, function (next) {
   this.populate({
     path: "products.productId",
-    select: "name priceAfterReduction quantity",
+    select: "productPictures name priceAfterReduction quantity",
   }).populate({
     path: "commandeOwner",
     select: "firstName lastName phoneNumber email",

@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../domain layer/entities/product.dart';
+import '../../../domain layer/entities/product.dart';
 
 class ProductWidget extends StatelessWidget {
   Product product;
@@ -84,7 +84,7 @@ class ProductWidget extends StatelessWidget {
                       )
                     : SizedBox(),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0.0.w, 0.0.h, 0.0.w, 0),
+                  padding: EdgeInsets.fromLTRB(5.0.w, 0.0.h, 0.0.w, 0),
                   child: ReusableText(
                     text: product.priceAfterReduction.toString() + " DT",
                     textSize: 10.sp,

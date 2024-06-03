@@ -34,14 +34,20 @@ import 'features/authorisation/presentation layer/bloc/update_user_password_bloc
 import 'features/authorisation/presentation layer/cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
+import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
 import 'features/products/data layer/data sources/product_local_data_souce.dart';
 import 'features/products/data layer/data sources/product_remote_data_source.dart';
 import 'features/products/domain layer/usecases/add_product.dart';
+import 'features/products/domain layer/usecases/delete_my_product.dart';
 import 'features/products/domain layer/usecases/get_all_products_within_distance.dart';
 import 'features/products/domain layer/usecases/get_all_products_within_distance_expires_today.dart';
+import 'features/products/domain layer/usecases/get_my_products.dart';
+import 'features/products/domain layer/usecases/refresh_my_products.dart';
 import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
 import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
+import 'features/products/presentation layer/bloc/get my products bloc/get_my_products_bloc.dart';
 import 'features/products/presentation layer/cubit/bnv cubit/bnv_cubit.dart';
+import 'features/products/presentation layer/cubit/delete my product cubit/delete_my_product_cubit.dart';
 import 'features/products/presentation layer/cubit/first image cubit/first_image_cubit.dart';
 import 'features/products/presentation layer/cubit/slider cubit/slider_cubit.dart';
 
@@ -49,6 +55,10 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(() => DeleteMyProductCubit(deleteMyProductUseCase: sl()));
+  sl.registerFactory(() => GetMyProductsBloc(
+      getAllMyProductsUseCase: sl(), refreshMyProductsUseCase: sl()));
+  sl.registerFactory(() => ShoppingCardCubit());
   sl.registerFactory(() => ProductQuantityCubit());
   sl.registerFactory(() => (GetProductsExpiresTodayBloc(
       getAllProductsWithinDistanceExpiresTodayUseCase: sl())));
@@ -74,6 +84,9 @@ Future<void> init() async {
   sl.registerFactory(() => SignOutBloc(signOut: sl()));
   sl.registerFactory(() => UpdateUserPasswordBloc(updatePasswordUseCase: sl()));
   // Use cases
+  sl.registerLazySingleton(() => DeleteMyProductUseCase(sl()));
+  sl.registerLazySingleton(() => GetMyProductsUseCase(sl()));
+  sl.registerLazySingleton(() => RefreshMyProductsUseCase(sl()));
   sl.registerLazySingleton(
       () => GetAllProductsWithinDistanceExpiresTodayUseCase(sl()));
   sl.registerLazySingleton(() => GetAllProductsWithinDistanceUseCase(sl()));

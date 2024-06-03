@@ -3,10 +3,10 @@ import 'package:dartz/dartz.dart';
 
 import '../repositories/product_repository.dart';
 
-class DeleteMyProduct {
+class DeleteMyProductUseCase {
   final ProductRepository repository;
 
-  DeleteMyProduct(this.repository);
+  DeleteMyProductUseCase(this.repository);
 
   Future<Either<Failure, Unit>> call(String id) async {
     return await repository.deleteMyProduct(id);

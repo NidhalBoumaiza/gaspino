@@ -24,9 +24,12 @@ import 'features/authorisation/presentation layer/cubit/confirm_password_visibil
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/pages/sign_in_screen.dart';
+import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
 import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
 import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
+import 'features/products/presentation layer/bloc/get my products bloc/get_my_products_bloc.dart';
 import 'features/products/presentation layer/cubit/bnv cubit/bnv_cubit.dart';
+import 'features/products/presentation layer/cubit/delete my product cubit/delete_my_product_cubit.dart';
 import 'features/products/presentation layer/cubit/first image cubit/first_image_cubit.dart';
 import 'features/products/presentation layer/cubit/product quantity cubit/product_quantity_cubit.dart';
 import 'features/products/presentation layer/cubit/slider cubit/slider_cubit.dart';
@@ -82,10 +85,18 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (create) => di.sl<FirstImageCubit>()),
         BlocProvider(create: (create) => di.sl<AddProduitBloc>()),
         BlocProvider<GetProductsWithinDistanceBloc>(
-            create: (context) => di.sl<GetProductsWithinDistanceBloc>()),
+            create: (context) => di.sl<GetProductsWithinDistanceBloc>()
+              ..add(GetProductsWithinDistancee(distance: 10000000000000000))),
         BlocProvider(create: (create) => di.sl<SliderCubit>()),
-        BlocProvider(create: (create) => di.sl<GetProductsExpiresTodayBloc>()),
+        BlocProvider(
+            create: (create) => di.sl<GetProductsExpiresTodayBloc>()
+              ..add(GetProductsWithinDistanceee(distance: 10000000000000000))),
         BlocProvider(create: (create) => di.sl<ProductQuantityCubit>()),
+        BlocProvider(create: (create) => di.sl<ShoppingCardCubit>()),
+        BlocProvider(
+            create: (create) =>
+                di.sl<GetMyProductsBloc>()..add(GetMyProducts())),
+        BlocProvider(create: (create) => di.sl<DeleteMyProductCubit>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

@@ -7,4 +7,9 @@ class ProductQuantityState extends Equatable {
 
   @override
   List<Object> get props => [quantities];
+
+  int get totalQuantity {
+    return quantities.values
+        .fold(0, (previousValue, element) => previousValue + element);
+  }
 }

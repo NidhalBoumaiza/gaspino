@@ -17,6 +17,10 @@ abstract class ProductRemoteDataSource {
 
   Future<List<ProductModel>> getAllProductsWithinDistanceExpiresToday(
       num? distance);
+
+  Future<List<ProductModel>> getMyProducts();
+
+  Future<Unit> deleteMyProduct(String id);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -68,6 +72,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       });
     }
     if (productModel.recoveryDate != null) {
+      print(productModel.recoveryDate);
       request.fields.addAll({
         "recoveryDate": productModel.recoveryDate!
             .map((date) => date?.toIso8601String())
@@ -116,7 +121,6 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   Future<List<ProductModel>> getAllProductsWithinDistanceExpiresToday(
       num? distance) async {
-    print("yoooooooooooooooooooooooooooooooooooooooo");
     final token = await this.token;
     final response = await client.get(
       Uri.parse(
@@ -148,39 +152,95 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     }
   }
 
-  Future<Failure> handleResponseWithoutUnit(http.Response response) async {
-    final responseBody = jsonDecode(response.body);
-    if (response.statusCode == 400) {
+  Future<List<ProductModel>> getMyProducts() async {
+    final token = await this.token;
+    final response = await client.get(
+      Uri.parse("${dotenv.env['URL']}/products/getMyProducts"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decodeJson = json.decode(response.body);
+
+      final List<ProductModel> products = decodeJson['products']
+          .map<ProductModel>((product) => ProductModel.fromJson(product))
+          .toList();
+      print(products);
+      return products;
+    } else if (response.statusCode == 400) {
+      final responseBody = jsonDecode(response.body);
       final errorMessage = responseBody['message'] as String;
 
       ServerMessageFailure.message = errorMessage;
+
       throw ServerMessageException();
     } else if (response.statusCode == 410) {
-      final errorMessage = responseBody['message'] as String;
-
-      UnauthorizedFailure.message = errorMessage;
-      throw const UnauthorizedException();
+      throw UnauthorizedException();
     } else {
       throw ServerException();
     }
   }
 
-  Future<Unit> handleResponse(http.Response response) async {
-    final responseBody = jsonDecode(response.body);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return Future.value(unit);
-    } else if (response.statusCode == 400) {
-      final errorMessage = responseBody['message'] as String;
+  Future<Unit> deleteMyProduct(String id) async {
+    final token = await this.token;
+    final response = await client.delete(
+      Uri.parse("${dotenv.env['URL']}/products/deleteMyProduct/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return handleResponse(response);
+  }
 
-      ServerMessageFailure.message = errorMessage;
-      throw ServerMessageException();
-    } else if (response.statusCode == 410) {
-      final errorMessage = responseBody['message'] as String;
+  Future<Failure> handleResponseWithoutUnit(http.Response response) async {
+    if (response.body.isNotEmpty) {
+      final responseBody = jsonDecode(response.body);
 
-      UnauthorizedFailure.message = errorMessage;
-      throw const UnauthorizedException();
+      if (response.statusCode == 400) {
+        final errorMessage = responseBody['message'] as String;
+        ServerMessageFailure.message = errorMessage;
+        throw ServerMessageException();
+      } else if (response.statusCode == 410) {
+        final errorMessage = responseBody['message'] as String;
+        UnauthorizedFailure.message = errorMessage;
+        throw const UnauthorizedException();
+      } else {
+        throw ServerException();
+      }
     } else {
-      throw ServerException();
+      // Handle empty response body
+      throw FormatException("Empty response body");
+    }
+  }
+
+  Future<Unit> handleResponse(http.Response response) async {
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 204) {
+      return Future.value(unit);
+    } else {
+      // Check if the response body is not empty
+      if (response.body.isNotEmpty) {
+        final responseBody = jsonDecode(response.body);
+
+        if (response.statusCode == 400) {
+          final errorMessage = responseBody['message'] as String;
+          ServerMessageFailure.message = errorMessage;
+          throw ServerMessageException();
+        } else if (response.statusCode == 410) {
+          final errorMessage = responseBody['message'] as String;
+          UnauthorizedFailure.message = errorMessage;
+          throw const UnauthorizedException();
+        } else {
+          throw ServerException();
+        }
+      } else {
+        // Handle empty response body
+        throw FormatException("Empty response body");
+      }
     }
   }
 

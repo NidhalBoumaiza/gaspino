@@ -15,8 +15,8 @@ import '../../bloc/get all products within distance bloc expires today/get_produ
 import '../../bloc/get all products within distance bloc/get_all_products_within_distance_bloc.dart';
 import '../../shimmers/home_page_H_shimmer.dart';
 import '../../shimmers/home_page_v_shimmer.dart';
-import '../../widgets/product_grid_view_widget.dart';
-import '../../widgets/product_horizontal_screen_widget.dart';
+import '../../widgets/product home screen widgets/product_grid_view_widget.dart';
+import '../../widgets/product home screen widgets/product_horizontal_screen_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,21 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 );
-                // return Column(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     SizedBox(
-                //       height: MediaQuery.of(context).size.height * 0.1,
-                //     ),
-                //     Center(
-                //       child: ReusablecircularProgressIndicator(
-                //         height: 20.h,
-                //         width: 20.w,
-                //         indicatorColor: primaryColor,
-                //       ),
-                //     ),
-                //   ],
-                // );
               } else if (state is GetProductsExpiresTodayLoaded) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.h, vertical: 5.h),

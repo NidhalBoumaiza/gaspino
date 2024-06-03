@@ -36,7 +36,6 @@ class AddProductScreen extends StatelessWidget {
   final TextEditingController endingDateController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime expirationDate = DateTime.now();
-
   DateTime? startingDate;
 
   DateTime? endingDate;
@@ -289,8 +288,7 @@ class AddProductScreen extends StatelessWidget {
                                     textFontWeight: FontWeight.w600),
                                 GestureDetector(
                                   onTap: () async {
-                                    DateTime? startingDate =
-                                        await showDateTimePicker(
+                                    startingDate = await showDateTimePicker(
                                       context,
                                       DateTime.now(),
                                       DateTime.now(),
@@ -299,7 +297,7 @@ class AddProductScreen extends StatelessWidget {
                                     );
                                     if (startingDate != null) {
                                       startingDateController.text =
-                                          "${startingDate.day}/${startingDate.month}/${startingDate.year} ${startingDate.hour}:${startingDate.minute} ";
+                                          "${startingDate!.day}/${startingDate!.month}/${startingDate!.year} ${startingDate!.hour}:${startingDate!.minute} ";
                                     }
                                   },
                                   child: ReusableTextFieldWidget(
@@ -327,8 +325,7 @@ class AddProductScreen extends StatelessWidget {
                                     textFontWeight: FontWeight.w600),
                                 GestureDetector(
                                   onTap: () async {
-                                    DateTime? endingDate =
-                                        await showDateTimePicker(
+                                    endingDate = await showDateTimePicker(
                                       context,
                                       DateTime.now(),
                                       DateTime.now(),
@@ -337,7 +334,7 @@ class AddProductScreen extends StatelessWidget {
                                     );
                                     if (endingDate != null) {
                                       endingDateController.text =
-                                          "${endingDate.day}/${endingDate.month}/${endingDate.year} ${endingDate.hour}:${endingDate.minute} ";
+                                          "${endingDate!.day}/${endingDate!.month}/${endingDate!.year} ${endingDate!.hour}:${endingDate!.minute} ";
                                     }
                                   },
                                   child: ReusableTextFieldWidget(

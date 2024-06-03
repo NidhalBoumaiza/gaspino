@@ -9,6 +9,7 @@ class ProductQuantityCubit extends Cubit<ProductQuantityState> {
   void changeQuantity(String productId, int quantity) {
     final updatedQuantities = Map<String, int>.from(state.quantities);
     updatedQuantities[productId] = quantity;
+    print(state.quantities);
     emit(ProductQuantityState(quantities: updatedQuantities));
   }
 }

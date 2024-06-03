@@ -1,8 +1,10 @@
-import 'package:client/features/products/presentation%20layer/widgets/product_widget.dart';
+import 'package:client/features/products/presentation%20layer/widgets/product%20home%20screen%20widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../domain layer/entities/product.dart';
+import '../../../../../core/utils/navigation_with_transition.dart';
+import '../../../domain layer/entities/product.dart';
+import '../../pages/details_product_screen.dart';
 
 class ProductHorizontalScreenWidget extends StatelessWidget {
   List<Product> products;
@@ -27,7 +29,12 @@ class ProductHorizontalScreenWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         return Padding(
           padding: EdgeInsets.symmetric(vertical: 5.h),
-          child: ProductWidget(product: products[index]),
+          child: GestureDetector(
+              onTap: () {
+                navigateToAnotherScreenWithFadeTransition(
+                    context, DetailsProductScreen(product: products[index]));
+              },
+              child: ProductWidget(product: products[index])),
         );
       },
     );
