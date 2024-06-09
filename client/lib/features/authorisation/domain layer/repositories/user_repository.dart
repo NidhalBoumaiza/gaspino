@@ -17,6 +17,10 @@ abstract class UserRepository {
 
 //--------------------------------------------------------------------------------
   /// NEXT METHODS ARE FOR AUTHENTICATED USERS
+  Future<Either<Failure, User>> modifyMyInformation(User user);
+
+  Future<Either<Failure, User>> getCachedUserInfo();
+
   Future<Either<Failure, Unit>> updateUserPassword(
       String oldPassword, String newPassword, String newPasswordConfirm);
 

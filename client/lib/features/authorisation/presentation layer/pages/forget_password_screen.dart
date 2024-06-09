@@ -3,7 +3,6 @@
 import 'package:client/core/widgets/reusable_text.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/forget_password_bloc/forget_password_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/reset_code_screen.dart';
-import 'package:client/features/authorisation/presentation%20layer/pages/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +13,7 @@ import '../../../../core/utils/navigation_with_transition.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
 import '../../../../core/widgets/simple_app_bar.dart';
+import '../../../products/presentation layer/widgets/circularProgressiveIndicator.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -115,11 +115,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         buttonColor: primaryColorLight,
                         text: 'Envoyer le code',
                         circularRadious: 15.sp,
-                        textButtonColor: Colors.black,
+                        textButtonColor: Colors.white,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is ForgetPasswordLoading
-                            ? circularProgressIndicator()
+                            ? ReusablecircularProgressIndicator(
+                                indicatorColor: Colors.white,
+                              )
                             : SizedBox(),
                       );
                     }),

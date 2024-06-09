@@ -4,6 +4,8 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/update_u
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/forget_password_screen.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/cubit/confirm%20new%20password%20cubit/confirm_new_password_cubit.dart';
+import 'package:client/features/products/presentation%20layer/cubit/new%20password%20cubit/new_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/pages/home_screen_squelette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/authorisation/presentation layer/bloc/forget_password_bloc/forget_password_bloc.dart';
+import 'features/authorisation/presentation layer/bloc/get_cached_user_info/get_cached_user_bloc.dart';
+import 'features/authorisation/presentation layer/bloc/modify my information bloc/modify_my_information_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/reset_password_step_one_bloc/reset_password_step_one_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/reset_password_step_two_bloc/reset_password_step_two_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/sign_in_bloc/sign_in_bloc.dart';
@@ -31,6 +35,7 @@ import 'features/products/presentation layer/bloc/get my products bloc/get_my_pr
 import 'features/products/presentation layer/cubit/bnv cubit/bnv_cubit.dart';
 import 'features/products/presentation layer/cubit/delete my product cubit/delete_my_product_cubit.dart';
 import 'features/products/presentation layer/cubit/first image cubit/first_image_cubit.dart';
+import 'features/products/presentation layer/cubit/old password cubit/old_password_cubit.dart';
 import 'features/products/presentation layer/cubit/product quantity cubit/product_quantity_cubit.dart';
 import 'features/products/presentation layer/cubit/slider cubit/slider_cubit.dart';
 import 'injection_container.dart' as di;
@@ -81,22 +86,25 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (create) => di.sl<ResetConfirmPasswordVisibilityCubit>()),
         BlocProvider(create: (create) => di.sl<ProfilePicCreationCubit>()),
-        BlocProvider(create: (create) => di.sl<BnvCubit>()),
+        BlocProvider(create: (create) => di.sl<BnvCubit>()..changeIndex(0)),
         BlocProvider(create: (create) => di.sl<FirstImageCubit>()),
         BlocProvider(create: (create) => di.sl<AddProduitBloc>()),
         BlocProvider<GetProductsWithinDistanceBloc>(
             create: (context) => di.sl<GetProductsWithinDistanceBloc>()
               ..add(GetProductsWithinDistancee(distance: 10000000000000000))),
         BlocProvider(create: (create) => di.sl<SliderCubit>()),
-        BlocProvider(
-            create: (create) => di.sl<GetProductsExpiresTodayBloc>()
-              ..add(GetProductsWithinDistanceee(distance: 10000000000000000))),
+        BlocProvider(create: (create) => di.sl<GetProductsExpiresTodayBloc>()),
         BlocProvider(create: (create) => di.sl<ProductQuantityCubit>()),
         BlocProvider(create: (create) => di.sl<ShoppingCardCubit>()),
         BlocProvider(
             create: (create) =>
                 di.sl<GetMyProductsBloc>()..add(GetMyProducts())),
         BlocProvider(create: (create) => di.sl<DeleteMyProductCubit>()),
+        BlocProvider(create: (create) => di.sl<GetCachedUserBloc>()),
+        BlocProvider(create: (create) => di.sl<ModifyMyInformationBloc>()),
+        BlocProvider(create: (create) => di.sl<OldPasswordCubit>()),
+        BlocProvider(create: (create) => di.sl<ConfirmNewPasswordCubit>()),
+        BlocProvider(create: (create) => di.sl<NewPasswordCubit>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

@@ -9,6 +9,7 @@ import '../../../../../core/widgets/my_customed_button.dart';
 import '../../../../../core/widgets/reusable_text.dart';
 import '../../../../../core/widgets/reusable_text_field_widget.dart';
 import '../../../../../core/widgets/simple_app_bar.dart';
+import '../../../../products/presentation layer/widgets/circularProgressiveIndicator.dart';
 import '../../../domain layer/entities/user.dart';
 import '../../bloc/sign_up_bloc/sign_up_bloc.dart';
 import '../../cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
@@ -170,11 +171,13 @@ class PasswordCreationScreen extends StatelessWidget {
                         buttonColor: primaryColorLight,
                         text: 'Créer compte',
                         circularRadious: 15.sp,
-                        textButtonColor: Colors.black,
+                        textButtonColor: Colors.white,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is SignUpLoading
-                            ? circularProgressIndicator()
+                            ? ReusablecircularProgressIndicator(
+                                indicatorColor: Colors.white,
+                              )
                             : const SizedBox(),
                       );
                     }),

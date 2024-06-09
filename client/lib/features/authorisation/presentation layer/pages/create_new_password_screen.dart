@@ -12,6 +12,7 @@ import '../../../../core/utils/navigation_with_transition.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
+import '../../../products/presentation layer/widgets/circularProgressiveIndicator.dart';
 import '../cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
 import '../cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 
@@ -38,7 +39,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
           extendBodyBehindAppBar: true,
           body: Container(
             width: 1.sw,
-            height: 1.sh,
+            height: 1.2.sh,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -168,11 +169,13 @@ class CreateNewPasswordScreen extends StatelessWidget {
                         buttonColor: primaryColorLight,
                         text: 'réinitialiser',
                         circularRadious: 15.sp,
-                        textButtonColor: Colors.black,
+                        textButtonColor: Colors.white,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is ResetPasswordStepTwoLoading
-                            ? circularProgressIndicator()
+                            ? ReusablecircularProgressIndicator(
+                                indicatorColor: Colors.white,
+                              )
                             : const SizedBox(),
                       );
                     }),

@@ -31,6 +31,8 @@ abstract class UserRemoteDataSource {
   Future<Unit> updateLocation(Location location);
 
   Future<Unit> disableMyAccount();
+
+  Future<UserModel> modifyMyInformation(UserModel userModel);
 }
 
 //------------------------------------------------------
@@ -196,6 +198,52 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       headers: {"Authorization": "Bearer $token"},
     );
     return handleResponse(response);
+  }
+
+  Future<UserModel> modifyMyInformation(UserModel userModel) async {
+    dynamic imagePart;
+    if (userModel.profilePicture != "") {
+      imagePart = await http.MultipartFile.fromPath(
+        'image', // key for the API
+        userModel.profilePicture,
+        contentType: MediaType('image', 'jpg'),
+      );
+    }
+
+    final request = http.MultipartRequest(
+      'PATCH',
+      Uri.parse(
+          "${dotenv.env['URL']}/users/updateMe"), // replace with your endpoint
+    );
+    request.fields.addAll({
+      "email": userModel.email,
+      "firstName": userModel.firstName,
+      "lastName": userModel.lastName,
+      "phoneNumber": userModel.phoneNumber,
+    });
+    if (imagePart != null) {
+      request.files.add(imagePart);
+    }
+    final token = await this.token;
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      return UserModel.fromJson(responseBody['user']);
+    } else if (response.statusCode == 400) {
+      final responseBody = jsonDecode(response.body);
+      final errorMessage = responseBody['message'] as String;
+      ServerMessageFailure.message = errorMessage;
+      throw ServerMessageException();
+    } else if (response.statusCode == 410) {
+      throw const UnauthorizedException();
+    } else {
+      throw ServerException();
+    }
   }
 
   Future<Unit> handleResponse(http.Response response) async {

@@ -123,6 +123,17 @@ class UserRepositoryImpl implements UserRepository {
 
   //------------------------------------------------------------------------------
   /// NEXT METHODS ARE FOR AUTHENTICATED USERS
+
+  @override
+  Future<Either<Failure, User>> getCachedUserInfo() async {
+    try {
+      final UserModel userModel = await userLocalDataSource.getUser();
+      return Right(userModel);
+    } on EmptyCacheException {
+      return Left(EmptyCacheFailure());
+    }
+  }
+
   @override
   Future<Either<Failure, Unit>> updateUserPassword(
       String oldPassword, String newPassword, String newPasswordConfirm) async {
@@ -186,6 +197,39 @@ class UserRepositoryImpl implements UserRepository {
       try {
         await userLocalDataSource.signOut();
         return const Right(unit);
+      } on ServerException {
+        return Left(ServerFailure());
+      } on ServerMessageException {
+        return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> modifyMyInformation(User user) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final UserModel userModel = UserModel(
+          user.id ?? "",
+          user.profilePicture ?? "",
+          user.firstName,
+          user.lastName,
+          user.phoneNumber,
+          user.email,
+          user.password,
+          user.passwordConfirm,
+          user.location ?? Location([0.0, 0.0]),
+          user.passwordResetCode ?? "",
+          user.accountStatus ?? false,
+        );
+        UserModel updatedUser =
+            await userRemoteDataSource.modifyMyInformation(userModel);
+        await userLocalDataSource.cacheUser(updatedUser);
+        return Right(updatedUser);
       } on ServerException {
         return Left(ServerFailure());
       } on ServerMessageException {

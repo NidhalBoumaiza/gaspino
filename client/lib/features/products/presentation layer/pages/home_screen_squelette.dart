@@ -10,23 +10,38 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/bottom_navigation_bar_screens.dart';
 import '../../../../core/utils/navigation_with_transition.dart';
+import '../../../authorisation/presentation layer/bloc/get_cached_user_info/get_cached_user_bloc.dart';
 import '../cubit/bnv cubit/bnv_cubit.dart';
 import '../cubit/slider cubit/slider_cubit.dart';
 import '../widgets/ruesable_bottom_navigation_bar.dart';
 import 'bottom navigation bar screens/add_product_screen.dart';
 
-class HomeScreenSquelette extends StatelessWidget {
+class HomeScreenSquelette extends StatefulWidget {
   const HomeScreenSquelette({super.key});
+
+  @override
+  State<HomeScreenSquelette> createState() => _HomeScreenSqueletteState();
+}
+
+class _HomeScreenSqueletteState extends State<HomeScreenSquelette> {
+  @override
+  void initState() {
+    context.read<BnvCubit>().changeIndex(0);
+    super.initState();
+    context.read<GetCachedUserBloc>().add(GetCachedUser());
+  }
 
   @override
   Widget build(BuildContext context) {
     TextEditingController searchController = TextEditingController();
+
     return SafeArea(
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
+            backgroundColor: Colors.white,
             floatingActionButton: FloatingActionButton(
               backgroundColor: primaryColor,
               onPressed: () {

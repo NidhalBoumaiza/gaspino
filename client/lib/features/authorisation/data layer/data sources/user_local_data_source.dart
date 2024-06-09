@@ -63,16 +63,15 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   Future<Unit> signOut() {
     sharedPreferences.remove('user');
     sharedPreferences.remove('token');
-    sharedPreferences.remove("products");
-    sharedPreferences.remove("bag");
+    sharedPreferences.remove("myProducts");
+    sharedPreferences.remove("productsWithinDistance");
     return Future.value(unit);
   }
 }
 
-
 Future getTokenn() async {
-  final SharedPreferences sharedPreferences = await SharedPreferences
-      .getInstance();
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
   final token = sharedPreferences.getString('token');
   if (token != null) {
     return token;

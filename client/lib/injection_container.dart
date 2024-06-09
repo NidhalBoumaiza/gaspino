@@ -9,6 +9,9 @@ import 'package:client/features/authorisation/presentation%20layer/cubit/profile
 import 'package:client/features/products/data%20layer/repositories/product_repository_impl.dart';
 import 'package:client/features/products/domain%20layer/repositories/product_repository.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/cubit/confirm%20new%20password%20cubit/confirm_new_password_cubit.dart';
+import 'package:client/features/products/presentation%20layer/cubit/new%20password%20cubit/new_password_cubit.dart';
+import 'package:client/features/products/presentation%20layer/cubit/old%20password%20cubit/old_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/cubit/product%20quantity%20cubit/product_quantity_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +24,8 @@ import 'features/authorisation/data layer/repositories/user_repository_impl.dart
 import 'features/authorisation/domain layer/repositories/user_repository.dart';
 import 'features/authorisation/domain layer/usecases/disable_account.dart';
 import 'features/authorisation/domain layer/usecases/forget_password.dart';
+import 'features/authorisation/domain layer/usecases/get_cached_user_info.dart';
+import 'features/authorisation/domain layer/usecases/modify_my_information.dart';
 import 'features/authorisation/domain layer/usecases/reset_password_step_one.dart';
 import 'features/authorisation/domain layer/usecases/reset_password_step_two.dart';
 import 'features/authorisation/domain layer/usecases/sign_in.dart';
@@ -28,6 +33,8 @@ import 'features/authorisation/domain layer/usecases/sign_out.dart';
 import 'features/authorisation/domain layer/usecases/sign_up.dart';
 import 'features/authorisation/domain layer/usecases/update_coordinate.dart';
 import 'features/authorisation/domain layer/usecases/update_user_password.dart';
+import 'features/authorisation/presentation layer/bloc/get_cached_user_info/get_cached_user_bloc.dart';
+import 'features/authorisation/presentation layer/bloc/modify my information bloc/modify_my_information_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/reset_password_step_two_bloc/reset_password_step_two_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/sign_out_bloc/sign_out_bloc.dart';
 import 'features/authorisation/presentation layer/bloc/update_user_password_bloc/update_user_password_bloc.dart';
@@ -55,6 +62,12 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(() => OldPasswordCubit());
+  sl.registerFactory(() => NewPasswordCubit());
+  sl.registerFactory(() => ConfirmNewPasswordCubit());
+  sl.registerFactory(
+      () => ModifyMyInformationBloc(modifyMyInformationUseCase: sl()));
+  sl.registerFactory(() => GetCachedUserBloc(getCachedUserInfoUseCase: sl()));
   sl.registerFactory(() => DeleteMyProductCubit(deleteMyProductUseCase: sl()));
   sl.registerFactory(() => GetMyProductsBloc(
       getAllMyProductsUseCase: sl(), refreshMyProductsUseCase: sl()));
@@ -84,6 +97,8 @@ Future<void> init() async {
   sl.registerFactory(() => SignOutBloc(signOut: sl()));
   sl.registerFactory(() => UpdateUserPasswordBloc(updatePasswordUseCase: sl()));
   // Use cases
+  sl.registerLazySingleton(() => ModifyMyInformationUseCase(sl()));
+  sl.registerLazySingleton(() => GetCachedUserInfoUseCase(sl()));
   sl.registerLazySingleton(() => DeleteMyProductUseCase(sl()));
   sl.registerLazySingleton(() => GetMyProductsUseCase(sl()));
   sl.registerLazySingleton(() => RefreshMyProductsUseCase(sl()));

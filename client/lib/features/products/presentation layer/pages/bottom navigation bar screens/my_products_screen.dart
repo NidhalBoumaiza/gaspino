@@ -22,6 +22,12 @@ class MyProductsScreen extends StatefulWidget {
 
 class _MyProductsScreenState extends State<MyProductsScreen> {
   @override
+  void dispose() {
+    super.dispose();
+    print("dispose");
+  }
+
+  @override
   void initState() {
     context.read<GetMyProductsBloc>().add(GetMyProducts());
     super.initState();
@@ -43,9 +49,12 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
                     children: [
                       SizedBox(height: 50.h),
                       SizedBox(
-                          height: 350.h,
-                          child: SvgPicture.asset(
-                              "assets/Shops re-opening soon-rafiki.svg")),
+                        height: 350.h,
+                        child: Image.asset(
+                          "assets/Shops.png",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       ReusableText(
                         text: "Vous n'avez pas encore de produits",
                         textSize: 16.sp,

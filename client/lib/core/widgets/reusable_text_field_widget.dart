@@ -19,6 +19,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
   void Function()? onPressedPreffixIcon;
   Color? prefixIconColor;
   bool? enabled;
+  double? paddingValue;
 
   ReusableTextFieldWidget({
     super.key,
@@ -38,12 +39,13 @@ class ReusableTextFieldWidget extends StatelessWidget {
     this.onPressedPreffixIcon,
     this.prefixIconColor,
     this.enabled,
+    this.paddingValue,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: paddingValue ?? 8.0),
       child: TextFormField(
         enabled: enabled ?? true,
         minLines: minLines ?? 1,
@@ -65,21 +67,29 @@ class ReusableTextFieldWidget extends StatelessWidget {
           fillColor: Colors.white,
           prefixIcon: prefixIcon != null
               ? IconButton(
-            onPressed: onPressedPreffixIcon,
-            icon: Icon(prefixIcon),
-            color: prefixIconColor ?? null,
-          )
+                  onPressed: onPressedPreffixIcon,
+                  icon: Icon(prefixIcon),
+                  color: prefixIconColor ?? null,
+                )
               : null,
           suffixIcon: obsecureText != null || suffixIcon != null
               ? IconButton(
-              onPressed: onPressedSuffixIcon,
-              icon: (suffixIcon) ??
-                  const Icon(
-                    Icons.visibility,
-                    color: Colors.grey,
-                  ))
+                  onPressed: onPressedSuffixIcon,
+                  icon: (suffixIcon) ??
+                      const Icon(
+                        Icons.visibility,
+                        color: Colors.grey,
+                      ))
               : null,
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0.sp),
+            borderSide: borderSide ?? BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0.sp),
+            borderSide: borderSide ?? BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0.sp),
             borderSide: borderSide ?? BorderSide.none,
           ),

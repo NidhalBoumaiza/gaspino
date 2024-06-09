@@ -1,7 +1,6 @@
 import 'package:client/core/utils/navigation_with_transition.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/reset_password_step_one_bloc/reset_password_step_one_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/create_new_password_screen.dart';
-import 'package:client/features/authorisation/presentation%20layer/pages/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +9,7 @@ import '../../../../core/colors.dart';
 import '../../../../core/widgets/my_customed_button.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../../core/widgets/reusable_text_field_widget.dart';
+import '../../../products/presentation layer/widgets/circularProgressiveIndicator.dart';
 import '../bloc/forget_password_bloc/forget_password_bloc.dart';
 
 class ResetCodeScreen extends StatelessWidget {
@@ -117,11 +117,13 @@ class ResetCodeScreen extends StatelessWidget {
                         buttonColor: primaryColorLight,
                         text: 'Verification',
                         circularRadious: 15.sp,
-                        textButtonColor: Colors.black,
+                        textButtonColor: Colors.white,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                         widget: state is ResetPasswordStepOneLoading
-                            ? circularProgressIndicator()
+                            ? ReusablecircularProgressIndicator(
+                                indicatorColor: Colors.white,
+                              )
                             : const SizedBox(),
                       );
                     }),

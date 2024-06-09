@@ -3,7 +3,6 @@ import 'package:client/core/widgets/reusable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/svg.dart';
 import '../../../../../core/widgets/my_customed_button.dart';
@@ -25,7 +24,10 @@ class MyShoppingCardScreen extends StatelessWidget {
               SizedBox(height: 70.h),
               SizedBox(
                   height: 300.h,
-                  child: SvgPicture.asset("assets/shoppingAmico.svg")),
+                  child: Image.asset(
+                    "assets/Grocery.png",
+                    fit: BoxFit.cover,
+                  )),
               SizedBox(height: 0.h),
               ReusableText(
                 text: "Commander des Produits 😄",
