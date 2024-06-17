@@ -54,11 +54,11 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   @override
   Future<List<ProductModel>> getProductsWithinDistance() {
     final productsWithinDistanceJson =
-        sharedPreferences.getString('productsWithinDistance');
+    sharedPreferences.getString('productsWithinDistance');
 
     if (productsWithinDistanceJson != null) {
       final decodeJson = json.decode(productsWithinDistanceJson);
-      print(decodeJson);
+
       final List<ProductModel> products = decodeJson
           .map<ProductModel>((product) => ProductModel.fromJson(product))
           .toList();

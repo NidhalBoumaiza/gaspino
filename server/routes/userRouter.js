@@ -23,6 +23,7 @@ router
   .route("/updateCoordinate")
   .patch(authController.protect, userController.updateMyLocation);
 
+  router.route("/updateMe").patch(authController.protect, uploadd.uploadPicture, userController.updateMe);
 router
   .route("/disableMyAccount")
   .patch(authController.protect, userController.disableMyAccount);

@@ -11,13 +11,25 @@ const {
 exports.addProduct = catchAsync(async (req, res, next) => {
   let newProduct = null;
   req.body.images = [];
+  
   if (req.files) {
     for (let i = 0; i < req.files.length; i++) {
       req.body.images.push(req.files[i].filename);
     }
   }
-  req.body.recoveryDate = req.body.recoveryDate.replace(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6})/g, '"$1"');
-  req.body.recoveryDate = JSON.parse(req.body.recoveryDate);
+
+  let recoveryDates = [];
+  recoveryDates = JSON.parse(req.body.recoveryDate);
+  console.log(recoveryDates);
+  try {
+    recoveryDates = JSON.parse(req.body.recoveryDate);
+    recoveryDates = recoveryDates.map(date => new Date(date));
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      message: "Invalid format for recoveryDate"
+    });
+  }
   newProduct = await Product.create({
     productPictures: req.body.images,
     name: req.body.name,
@@ -26,7 +38,7 @@ exports.addProduct = catchAsync(async (req, res, next) => {
     priceAfterReduction: req.body.priceAfterReduction,
     quantity: req.body.quantity,
     expirationDate: req.body.expirationDate,
-    recoveryDate: req.body.recoveryDate,
+    recoveryDate: recoveryDates,
     productOwner: req.user.id,
     location: {
       type: "Point",
@@ -36,11 +48,13 @@ exports.addProduct = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: "success",
-   
-      newProduct,
-    
+    newProduct,
   });
 });
+
+
+
+
 
 exports.getMyProducts = catchAsync(async (req, res, next) => {
   const products = await Product.find({ productOwner: req.user.id });

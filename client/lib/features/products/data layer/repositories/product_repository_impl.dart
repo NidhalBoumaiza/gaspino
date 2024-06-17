@@ -46,6 +46,8 @@ class ProductReopositryImpl implements ProductRepository {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -90,6 +92,8 @@ class ProductReopositryImpl implements ProductRepository {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -107,6 +111,8 @@ class ProductReopositryImpl implements ProductRepository {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       try {
@@ -130,6 +136,8 @@ class ProductReopositryImpl implements ProductRepository {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -191,6 +199,8 @@ class ProductReopositryImpl implements ProductRepository {
         return Left(ServerFailure());
       } on ServerMessageException {
         return Left(ServerMessageFailure());
+      } on UnauthorizedException {
+        return Left(UnauthorizedFailure());
       }
     } else {
       return Left(OfflineFailure());

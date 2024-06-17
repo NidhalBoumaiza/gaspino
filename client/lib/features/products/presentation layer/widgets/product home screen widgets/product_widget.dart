@@ -45,8 +45,11 @@ class ProductWidget extends StatelessWidget {
                   color: const Color(0xffe0eee9),
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "${dotenv.env["URLIMAGE"]}${product.productPictures[0]}"),
+                    image: product.productPictures.isNotEmpty
+                        ? NetworkImage(
+                            "${dotenv.env["URLIMAGE"]}${product.productPictures[0]}")
+                        : const AssetImage("assets/Eating.png")
+                            as ImageProvider<Object>,
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -47,17 +47,20 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Unit> signUp(UserModel userModel) async {
-    final imagePart = await http.MultipartFile.fromPath(
-      'image', // key for the API
-      userModel.profilePicture,
-      contentType: MediaType('image', 'jpg'),
-    );
-
     final request = http.MultipartRequest(
       'POST',
       Uri.parse(
           "${dotenv.env['URL']}/users/signup"), // replace with your endpoint
     );
+    if (userModel.profilePicture != "") {
+      final imagePart = await http.MultipartFile.fromPath(
+        'image', // key for the API
+        userModel.profilePicture,
+        contentType: MediaType('image', 'jpg'),
+      );
+      request.files.add(imagePart);
+    }
+
     request.fields.addAll({
       "email": userModel.email,
       "password": userModel.password,
@@ -66,7 +69,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       "lastName": userModel.lastName,
       "phoneNumber": userModel.phoneNumber,
     });
-    request.files.add(imagePart);
+
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return handleResponse(response);
@@ -230,7 +233,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     }
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       return UserModel.fromJson(responseBody['user']);

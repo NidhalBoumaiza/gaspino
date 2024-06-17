@@ -56,20 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       textFontWeight: FontWeight.w800,
                       textColor: const Color(0xff040003),
                     ),
-                    SizedBox(height: 5.h),
-                    ReusableText(
-                      text: 'Bon retour',
-                      textSize: 20.sp,
-                      textFontWeight: FontWeight.w500,
-                      textColor: const Color(0xff41534e),
-                    ),
-                    ReusableText(
-                      text: 'Tu nous as manqué',
-                      textSize: 20.sp,
-                      textFontWeight: FontWeight.w500,
-                      textColor: const Color(0xff41534e),
-                    ),
-                    SizedBox(height: 50.h),
+                    SizedBox(height: 90.h),
                     Form(
                       key: _formKey,
                       child: Column(

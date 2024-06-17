@@ -28,9 +28,7 @@ exports.commanderCommande = catchAsync(async (req, res, next) => {
   });
   res.status(201).json({
     status: "success",
-    data: {
       commande,
-    },
   });
 });
 
@@ -41,10 +39,9 @@ exports.getMyCommandes = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    CommandeNumber: commandes.length,
-    data: {
+    
       commandes,
-    },
+    
   });
 });
 
@@ -53,8 +50,8 @@ exports.getWhoCommandedMyProduct = catchAsync(async (req, res, next) => {
 
   let myOrderedProducts = [];
   for (let commande of commandes) {
-    for (let product of commande.products) {
-      console.log(product);
+    for (let product of commande.products) {  
+      console.log(product.productId);
       if (product.productId.productOwner.id === req.user.id) {
         myOrderedProducts.push({
           product,
@@ -63,6 +60,9 @@ exports.getWhoCommandedMyProduct = catchAsync(async (req, res, next) => {
         });
       }
     }
+  }
+  if (myOrderedProducts.length === 0) {
+    return next(new AppError("Vous n'avez pas des produits Commandés", 400));
   }
   res.status(200).json({
     status: "success",

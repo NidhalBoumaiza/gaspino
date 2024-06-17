@@ -4,11 +4,11 @@ import '../../../authorisation/domain layer/entities/user.dart';
 import 'ordred_product.dart';
 
 class Commande extends Equatable {
-  late String id;
+  late String? id;
   late List<OrderedProduct> products = [];
-  late String commandeStatus;
-  late User commandeOwner;
-  late DateTime createdAt;
+  late String? commandeStatus;
+  late User? commandeOwner;
+  late DateTime? createdAt;
 
   Commande(
     this.id,
@@ -20,5 +20,5 @@ class Commande extends Equatable {
 
   @override
   List<Object> get props =>
-      [id, products, commandeStatus, commandeOwner, createdAt];
+      [id!, products, commandeStatus!, commandeOwner!, createdAt!];
 }

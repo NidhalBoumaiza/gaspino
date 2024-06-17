@@ -12,7 +12,6 @@ class ResetConfirmPasswordVisibilityCubit
       : super(ResetConfirmPasswordVisibilityState(isVisible: false));
 
   void changeVisibility() {
-    print(state.isVisible);
     final isVisible = !state.isVisible;
     final updatedState =
         ResetConfirmPasswordVisibilityState(isVisible: isVisible);

@@ -58,7 +58,7 @@ class _ModifyMyInformationScreenState extends State<ModifyMyInformationScreen> {
         password: '',
         passwordConfirm: '',
       );
-      print(user);
+
       _modifyMyInformationBloc.modifyMyInformationUseCase(user);
       context.read<GetCachedUserBloc>().add(GetCachedUser());
     }

@@ -26,7 +26,7 @@ createSendToken = (user, statuscode, res) => {
   const token = signToken(user._id);
   const refreshToken = generateRefreshToken(user._id);
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-  res.cookie("jwt", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
+  res.cookie("jwt", token, { maxAge: 90 * 60 * 60 * 1000, httpOnly: true });
   res.status(statuscode).json({
     status: "success",
     token,

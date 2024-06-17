@@ -7,18 +7,17 @@ Future<dynamic> getCurrentLocation() async {
 
     if (checkpermission == LocationPermission.denied) {
       LocationPermission requestpermission =
-          await Geolocator.requestPermission();
+      await Geolocator.requestPermission();
       if (requestpermission == LocationPermission.whileInUse) {
         // Handle the case when permission is granted while the app is in use
       }
     } else {
       var cordonne = await Geolocator.getCurrentPosition();
-      print(cordonne);
+
       return cordonne;
     }
   } else {
     bool locationOpened = await Geolocator.openLocationSettings();
-    print("no");
   }
   return null;
 }

@@ -399,9 +399,11 @@ class AddProductScreen extends StatelessWidget {
                             recoveryDate: [startingDate, endingDate],
                             location: Location([36.418815, 10.655665]),
                             description: descriptionController.text,
-                            priceBeforeReduction: double.parse(
-                                originalPriceController.text
-                                    .replaceAll(",", ".")),
+                            priceBeforeReduction:
+                                originalPriceController.text != ""
+                                    ? double.parse(originalPriceController.text
+                                        .replaceAll(",", "."))
+                                    : 0,
                           );
                           context
                               .read<AddProduitBloc>()

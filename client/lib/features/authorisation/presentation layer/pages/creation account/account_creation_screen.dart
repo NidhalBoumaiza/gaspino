@@ -135,6 +135,19 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                                       controller: _emailController,
                                       hintText: "Example@gmail.com",
                                       keyboardType: TextInputType.emailAddress,
+                                      validatorFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Saisir votre email';
+                                        }
+                                        // Regular expression for validating an email
+                                        String pattern =
+                                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                                        RegExp regex = RegExp(pattern);
+                                        if (!regex.hasMatch(value)) {
+                                          return 'Entrez une adresse e-mail valide';
+                                        }
+                                        return null;
+                                      },
                                     ),
                                   ],
                                 ),

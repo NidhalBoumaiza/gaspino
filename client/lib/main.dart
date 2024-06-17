@@ -28,6 +28,7 @@ import 'features/authorisation/presentation layer/cubit/confirm_password_visibil
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/pages/sign_in_screen.dart';
+import 'features/commande/presentation layer/bloc/get my ordered products/get_my_ordered_products_bloc.dart';
 import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
 import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
 import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (create) => di.sl<OldPasswordCubit>()),
         BlocProvider(create: (create) => di.sl<ConfirmNewPasswordCubit>()),
         BlocProvider(create: (create) => di.sl<NewPasswordCubit>()),
+        BlocProvider(create: (create) => di.sl<GetMyOrderedProductsBloc>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

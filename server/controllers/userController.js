@@ -2,7 +2,9 @@ const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("../utils/appError");
 const { findById, findByIdAndUpdate } = require("../models/userModel");
-
+const {
+  deleteImageProductFromFolder,
+} = require("../utils/deleteImageFromFolder");
 const filtredObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
@@ -12,38 +14,46 @@ const filtredObj = (obj, ...allowedFields) => {
 };
 
 //-----------------------Update Me -----------------------------------
-// exports.updateMe = catchAsync(async (req, res, next) => {
-//   if (req.body.password || req.body.passwordConfirm) {
-//     return next(
-//       new AppError(
-//         "for updating the password use this URL : /updateUserPassword ! ",
-//         400
-//       )
-//     );
-//   }
-//   const filtredBody = filtredObj(
-//     req.body,
-//     "name",
-//     "email",
-//     "photo",
-//     "firstName",
-//     "lastName",
-//     "nickName"
-//   );
-//   // console.log(filtredBody);
-//   const updatedUser = await Account.findByIdAndUpdate(
-//     req.user.id,
-//     filtredBody,
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-//   res.status(200).json({
-//     status: "Update",
-//     user: updatedUser,
-//   });
-// });
+exports.updateMe = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new AppError("Aucun utilisateur trouvé", 400));
+  }
+
+  const filtredBody = filtredObj(
+    req.body,
+    "firstName",
+    "lastName",
+    "phoneNumber",
+    "profilePicture"
+  );
+
+  if (req.file) {
+    filtredBody.profilePicture = req.file.filename;
+  }
+
+  const imagestoDelete = [];
+  if (user.profilePicture && filtredBody.profilePicture && user.profilePicture !== filtredBody.profilePicture) {
+    imagestoDelete.push(user.profilePicture);
+  }
+
+  deleteImageProductFromFolder(imagestoDelete);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    filtredBody,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: "Update",
+    user: updatedUser,
+  });
+});
+
 
 //*********************************************************************** */ */
 //----------------------------disable my account ----------------------------------

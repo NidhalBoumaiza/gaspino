@@ -20,27 +20,28 @@ class ReusableTextFieldWidget extends StatelessWidget {
   Color? prefixIconColor;
   bool? enabled;
   double? paddingValue;
+  String? Function(String?)? validatorFunction;
 
-  ReusableTextFieldWidget({
-    super.key,
-    required this.controller,
-    this.hintText,
-    this.onPressedSuffixIcon,
-    this.suffixIcon,
-    this.obsecureText,
-    this.errorMessage,
-    this.keyboardType,
-    this.textAlignProperty,
-    this.maxLenghtProperty,
-    this.borderSide,
-    this.maxLines,
-    this.minLines,
-    this.prefixIcon,
-    this.onPressedPreffixIcon,
-    this.prefixIconColor,
-    this.enabled,
-    this.paddingValue,
-  });
+  ReusableTextFieldWidget(
+      {super.key,
+      required this.controller,
+      this.hintText,
+      this.onPressedSuffixIcon,
+      this.suffixIcon,
+      this.obsecureText,
+      this.errorMessage,
+      this.keyboardType,
+      this.textAlignProperty,
+      this.maxLenghtProperty,
+      this.borderSide,
+      this.maxLines,
+      this.minLines,
+      this.prefixIcon,
+      this.onPressedPreffixIcon,
+      this.prefixIconColor,
+      this.enabled,
+      this.paddingValue,
+      this.validatorFunction});
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +56,13 @@ class ReusableTextFieldWidget extends StatelessWidget {
         keyboardType: keyboardType ?? TextInputType.text,
         obscureText: obsecureText ?? false,
         controller: controller..text,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return errorMessage ?? 'Ce champ est obligatoire';
-          }
-          return null;
-        },
+        validator: validatorFunction ??
+            (value) {
+              if (value == null || value.isEmpty) {
+                return errorMessage ?? 'Ce champ est obligatoire';
+              }
+              return null;
+            },
         decoration: InputDecoration(
           counterText: "",
           filled: true,

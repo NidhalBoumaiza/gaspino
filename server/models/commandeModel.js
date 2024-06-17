@@ -17,13 +17,7 @@ const commandeSchema = mongoose.Schema({
         enum: ["pending", "delivered", "refused"],
         default: "pending",
       },
-      // recoveryDate: {
-      //   type: Date,
-      //   required: [
-      //     true,
-      //     "Veuillez fournir une date de récupération pour le produit",
-      //   ],
-      // },
+     
     },
   ],
   commandeStatus: {
@@ -44,10 +38,10 @@ const commandeSchema = mongoose.Schema({
 commandeSchema.pre(/^find/, function (next) {
   this.populate({
     path: "products.productId",
-    select: "productPictures name priceAfterReduction quantity",
+  //  select: "productPictures name priceAfterReduction quantity",
   }).populate({
     path: "commandeOwner",
-    select: "firstName lastName phoneNumber email",
+   // select: "firstName lastName phoneNumber email",
   });
   next();
 });

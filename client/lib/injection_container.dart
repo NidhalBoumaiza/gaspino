@@ -6,6 +6,8 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/sign_in_
 import 'package:client/features/authorisation/presentation%20layer/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/bloc/update_coordinate_bloc/update_coordinate_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
+import 'package:client/features/commande/data%20layer/repositories/commande_repository_impl.dart';
+import 'package:client/features/commande/domain%20layer/repositories/commande_repository.dart';
 import 'package:client/features/products/data%20layer/repositories/product_repository_impl.dart';
 import 'package:client/features/products/domain%20layer/repositories/product_repository.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
@@ -41,6 +43,10 @@ import 'features/authorisation/presentation layer/bloc/update_user_password_bloc
 import 'features/authorisation/presentation layer/cubit/confirm_password_visibility_reset_password_cubit/reset_confirm_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_reset_password_cubit/reset_password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
+import 'features/commande/data layer/data sources/commande_local_data_source.dart';
+import 'features/commande/data layer/data sources/commande_remote_data_source.dart';
+import 'features/commande/domain layer/usecases/get_who_commande_my_product_use_case.dart';
+import 'features/commande/presentation layer/bloc/get my ordered products/get_my_ordered_products_bloc.dart';
 import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
 import 'features/products/data layer/data sources/product_local_data_souce.dart';
 import 'features/products/data layer/data sources/product_remote_data_source.dart';
@@ -62,6 +68,8 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(
+      () => GetMyOrderedProductsBloc(getWhoOrderedProductsUseCase: sl()));
   sl.registerFactory(() => OldPasswordCubit());
   sl.registerFactory(() => NewPasswordCubit());
   sl.registerFactory(() => ConfirmNewPasswordCubit());
@@ -97,6 +105,7 @@ Future<void> init() async {
   sl.registerFactory(() => SignOutBloc(signOut: sl()));
   sl.registerFactory(() => UpdateUserPasswordBloc(updatePasswordUseCase: sl()));
   // Use cases
+  sl.registerLazySingleton(() => GetWhoCommandeMyProductUseCase(sl()));
   sl.registerLazySingleton(() => ModifyMyInformationUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedUserInfoUseCase(sl()));
   sl.registerLazySingleton(() => DeleteMyProductUseCase(sl()));
@@ -116,6 +125,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
   sl.registerLazySingleton(() => UpdateUserPasswordUseCase(sl()));
   // Repository
+  sl.registerLazySingleton<CommandeRepository>(() => CommandeRepositoryImpl(
+        commandeRemoteDataSource: sl(),
+        commandeLocalDataSource: sl(),
+        networkInfo: sl(),
+      ));
   sl.registerLazySingleton<ProductRepository>(() => ProductReopositryImpl(
         productRemoteDataSource: sl(),
         productLocalDataSource: sl(),
@@ -128,7 +142,10 @@ Future<void> init() async {
       ));
 
   // Data sources
-
+  sl.registerLazySingleton<CommandeRemoteDataSource>(
+      () => CommandeRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<CommandeLocalDataSource>(
+      () => CommandeLocalDataSourceImpl(sharedPreferences: sl()));
   sl.registerLazySingleton<ProductLocalDataSource>(
       () => ProductLocalDataSourceImpl(sharedPreferences: sl()));
 

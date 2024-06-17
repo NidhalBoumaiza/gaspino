@@ -8,7 +8,7 @@ class CommandeModel extends Commande {
     String id,
     List<OrderedProductModel> products,
     String commandeStatus,
-    User commandeOwner,
+    User? commandeOwner,
     DateTime createdAt,
   ) : super(
           id,
@@ -20,13 +20,11 @@ class CommandeModel extends Commande {
 
   factory CommandeModel.fromJson(Map<String, dynamic> json) {
     return CommandeModel(
-      json['_id'] ?? '',
-      (json['products'] as List)
-          .map((product) => OrderedProductModel.fromJson(product))
-          .toList(),
+      json['commandeId'] ?? '',
+      [OrderedProductModel.fromJson(json['product'])], // Changed this line
       json['commandeStatus'] ?? '',
       UserModel.fromJson(json['commandeOwner'] as Map<String, dynamic>),
-      DateTime.parse(json['createdAt'] ?? ''),
+      DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 
@@ -37,8 +35,9 @@ class CommandeModel extends Commande {
           .map((product) => (product as OrderedProductModel).toJson())
           .toList(),
       'commandeStatus': commandeStatus,
-      'commandeOwner': (commandeOwner as UserModel).toJson(),
-      'createdAt': createdAt.toIso8601String(),
+      'commandeOwner':
+          commandeOwner != null ? (commandeOwner as UserModel).toJson() : null,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 }

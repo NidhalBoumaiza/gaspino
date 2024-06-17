@@ -17,4 +17,4 @@ const String PasswordChangeSucessMessage =
     "Votre mot de passe a été changé avec succès";
 
 const String SignUpSuccessMessage =
-    "Inscription réussie , veuillez vous confirmer votre email puis vous connecter :)";
+    "Inscription réussie , veuillez vous confirmer votre email puis vous connecter 😊";

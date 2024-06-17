@@ -72,12 +72,10 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       });
     }
     if (productModel.recoveryDate != null) {
-      print(productModel.recoveryDate);
       request.fields.addAll({
-        "recoveryDate": productModel.recoveryDate!
-            .map((date) => date?.toIso8601String())
-            .toList()
-            .toString(),
+        'recoveryDate': jsonEncode(productModel.recoveryDate
+            ?.map((date) => date?.toIso8601String())
+            .toList()),
       });
     }
     request.files.addAll(imageParts);
@@ -168,7 +166,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final List<ProductModel> products = decodeJson['products']
           .map<ProductModel>((product) => ProductModel.fromJson(product))
           .toList();
-      print(products);
+
       return products;
     } else if (response.statusCode == 400) {
       final responseBody = jsonDecode(response.body);
@@ -192,6 +190,62 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         'Authorization': 'Bearer $token',
       },
     );
+    return handleResponse(response);
+  }
+
+  @override
+  Future<Unit> updateMyProduct(ProductModel productModel, String id) async {
+    List<String> imagePaths = productModel.productPictures;
+    List<http.MultipartFile> imageParts = [];
+    for (String imagePath in imagePaths) {
+      var imagePart = await http.MultipartFile.fromPath(
+        'images',
+        imagePath,
+        contentType: MediaType('images', 'jpg'),
+      );
+
+      imageParts.add(imagePart);
+    }
+
+    final request = http.MultipartRequest(
+      'PATCH',
+      Uri.parse("${dotenv.env['URL']}/products/updateProduct/$id"),
+    );
+    final token = await this.token;
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': 'Bearer $token',
+    });
+    request.fields.addAll({
+      "name": productModel.name,
+      "priceBeforeReduction": productModel.priceBeforeReduction.toString(),
+      "quantity": productModel.quantity.toString(),
+      "expirationDate": productModel.expirationDate.toIso8601String(),
+      "coordinates": jsonEncode(productModel.location.coordinates),
+      "expired": productModel.expired.toString(),
+      "createdAt": productModel.createdAt.toIso8601String(),
+    });
+    if (productModel.description != null) {
+      request.fields.addAll({
+        "description": productModel.description.toString(),
+      });
+    }
+    if (productModel.priceBeforeReduction != null) {
+      request.fields.addAll({
+        "priceAfterReduction": productModel.priceAfterReduction.toString(),
+      });
+    }
+    if (productModel.recoveryDate != null) {
+      request.fields.addAll({
+        'recoveryDate': jsonEncode(productModel.recoveryDate
+            ?.map((date) => date?.toIso8601String())
+            .toList()),
+      });
+    }
+    request.files.addAll(imageParts);
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
     return handleResponse(response);
   }
 

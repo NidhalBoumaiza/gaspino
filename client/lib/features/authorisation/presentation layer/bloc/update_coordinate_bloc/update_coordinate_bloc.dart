@@ -15,15 +15,14 @@ class UpdateCoordinateBloc
     extends Bloc<UpdateCoordinateEvent, UpdateCoordinateState> {
   UpdateCoordinateUseCase updateCoordinateUseCase;
 
-
   UpdateCoordinateBloc({required this.updateCoordinateUseCase})
       : super(UpdateCoordinateInitial()) {
     on<UpdateCoordinateEvent>((event, emit) {});
     on<UpdateCoordinate>(_updateCoordinate);
   }
 
-  _updateCoordinate(UpdateCoordinate event,
-      Emitter<UpdateCoordinateState> emit) async {
+  _updateCoordinate(
+      UpdateCoordinate event, Emitter<UpdateCoordinateState> emit) async {
     emit(UpdateCoordinateLoading());
     dynamic coordinate = await getCurrentLocation();
     if (coordinate == null) {
@@ -31,13 +30,11 @@ class UpdateCoordinateBloc
           UpdateCoordinateError(message: 'Vous devez activer la localisation'));
       return;
     }
-    print("test");
-    print(coordinate);
-    print(coordinate.latitude);
+
     Location location = Location([coordinate.longitude, coordinate.latitude]);
     final failureOrUnit = await updateCoordinateUseCase(location);
     failureOrUnit.fold(
-          (failure) {
+      (failure) {
         if (failure is UnauthorizedFailure) {
           emit(UpdateCoordinateUnauthorized(
               message: mapFailureToMessage(failure)));
@@ -45,7 +42,7 @@ class UpdateCoordinateBloc
           emit(UpdateCoordinateError(message: mapFailureToMessage(failure)));
         }
       },
-          (_) => emit(UpdateCoordinateSuccess()),
+      (_) => emit(UpdateCoordinateSuccess()),
     );
   }
 }

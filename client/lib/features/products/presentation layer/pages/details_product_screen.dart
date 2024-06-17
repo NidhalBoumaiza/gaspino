@@ -339,9 +339,15 @@ class _DetailsProductScreenState extends State<DetailsProductScreen> {
                         final product =
                             OrderedProduct(widget.product, quantity, "pending");
                         context.read<ShoppingCardCubit>().addProduct(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Produit ajouté au panier !"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       },
                       buttonColor: primaryColor,
-                      text: "Commander",
+                      text: "Ajouter au panier",
                       circularRadious: 15.sp,
                       textButtonColor: Colors.white,
                       fontSize: 17.sp,

@@ -20,7 +20,7 @@ class PictureCreationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print (user);
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

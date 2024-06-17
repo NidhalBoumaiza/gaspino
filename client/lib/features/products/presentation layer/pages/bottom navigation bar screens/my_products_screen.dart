@@ -2,7 +2,6 @@ import 'package:client/core/widgets/reusable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/colors.dart';
 import '../../../../../core/utils/navigation_with_transition.dart';
@@ -24,7 +23,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   @override
   void dispose() {
     super.dispose();
-    print("dispose");
   }
 
   @override
@@ -66,10 +64,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
             return Column(
               children: [
                 SizedBox(height: 50.h),
-                SizedBox(
-                    height: 350.h,
-                    child: SvgPicture.asset(
-                        "assets/Shops re-opening soon-rafiki.svg")),
+                SizedBox(height: 350.h, child: Image.asset("assets/Shops.png")),
                 ReusableText(
                   text: state.message,
                   textSize: 16.sp,
