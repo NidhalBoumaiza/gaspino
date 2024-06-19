@@ -8,9 +8,10 @@ const fs = require("fs");
 const { verify } = require("crypto");
 
 exports.commanderCommande = catchAsync(async (req, res, next) => {
-  console.log(req.body.products);
+  // console.log(req.body.products[0]);
 
   for (let product of req.body.products) {
+    console.log(product);
     const produitFromDataBase = await Product.findById(product.productId);
     console.log(produitFromDataBase.quantity, product.quantity);
     if (produitFromDataBase.quantity < product.quantity) {
@@ -22,6 +23,7 @@ exports.commanderCommande = catchAsync(async (req, res, next) => {
       );
     }
   }
+
   const commande = await Commande.create({
     products: req.body.products,
     commandeOwner: req.user.id,
@@ -90,32 +92,42 @@ exports.CancelMyCommande = catchAsync(async (req, res, next) => {
 });
 
 exports.cancelOneProductFromCommande = catchAsync(async (req, res, next) => {
+  
   const commande = await Commande.findById(req.params.commandeId);
   if (!commande) {
-    return next(new AppError("Commande non trouvé", 404));
+    return next(new AppError("Commande non trouvé", 400));
   }
-  let productIndex = commande.products.findIndex(
-    (product) => product.productId == req.params.productId
+  console.log(req.params.productId)
+  console.log (commande)
+  let product = commande.products.find(
+    (product) => {
+      return product.productId.equals(req.params.productId); 
+    }
   );
-  if (productIndex === -1) {
-    return next(new AppError("Produit non trouvé", 404));
+  if (!product) {
+    return next(new AppError("Produit non trouvé", 400));
   }
-  commande.products.splice(productIndex, 1);
+
+  product.ordredProduitStatus = "cancelled"; // Update the status to cancelled
+
   await commande.save();
+
   res.status(200).json({
     status: "success",
+    product,
   });
 });
 
+
 exports.updateProductStatusToDelivered = catchAsync(async (req, res, next) => {
-  const commande = await Commande.findById(req.params.commandeId);
+  let commande = await Commande.findById(req.params.commandeId);
   if (!commande) {
-    return next(new AppError("Commande non trouvé", 404));
+    return next(new AppError("Commande non trouvé", 400));
   }
 
-  let product = commande.products.id(req.params.productId);
+  let product = commande.products.find(product => product.productId._id.toString() === req.params.productId);
   if (!product) {
-    return next(new AppError("Produit non trouvé", 404));
+    return next(new AppError("Produit non trouvé", 400));
   }
 
   const produitFromDataBase = await Product.findById(product.productId);
@@ -150,11 +162,24 @@ exports.updateProductStatusToDelivered = catchAsync(async (req, res, next) => {
       new: true,
     }
   );
+
+  await commande.save();
+
+  // Reload the commande object from the database
+  commande = await Commande.findById(req.params.commandeId);
+
+  // Check if all products are delivered
+  if (commande.products.every(product => product.ordredProduitStatus === "delivered")) {
+    commande.status = "delivered";
+  }
+
   await commande.save();
 
   res.status(200).json({
     status: "success",
-
     product,
   });
 });
+
+
+

@@ -12,6 +12,7 @@ import '../../../../../core/utils/navigation_with_transition.dart';
 import '../../../../authorisation/presentation layer/bloc/disable_account_bloc/disable_account_bloc.dart';
 import '../../../../authorisation/presentation layer/bloc/sign_out_bloc/sign_out_bloc.dart';
 import '../../../../commande/presentation layer/pages/mes_produit_commande_screen.dart';
+import '../../../../commande/presentation layer/pages/my_orders_screen.dart';
 import '../../widgets/others screen widgets/Reusable_list_tile.dart';
 import '../settings pages/modify_my_information_screen.dart';
 import '../settings pages/modify_my_password_screen.dart';
@@ -76,7 +77,10 @@ class _OthersScreenState extends State<OthersScreen> {
                   ReusableListTile(
                     text: "Mes commandes",
                     icon: Icons.shopping_cart,
-                    onTap: () {},
+                    onTap: () {
+                      navigateToAnotherScreenWithSlideTransitionFromRightToLeft(
+                          context, MyOrdersScreen());
+                    },
                     textColor: primaryColor,
                     textFontWeight: FontWeight.w600,
                     textSize: 16,

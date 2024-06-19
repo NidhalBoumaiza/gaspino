@@ -35,4 +35,8 @@ class ShoppingCardCubit extends Cubit<ShoppingCardState> {
     updatedProducts.removeWhere((p) => p.product.id == product.product.id);
     emit(ShoppingCardState(ordredProducts: updatedProducts));
   }
+
+  void clearShoppingCard() {
+    emit(ShoppingCardState(ordredProducts: []));
+  }
 }

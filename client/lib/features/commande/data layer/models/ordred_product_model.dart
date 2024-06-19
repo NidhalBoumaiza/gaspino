@@ -14,10 +14,12 @@ class OrderedProductModel extends OrderedProduct {
         );
 
   factory OrderedProductModel.fromJson(Map<String, dynamic> json) {
+    print("json");
+    print(json);
     return OrderedProductModel(
       ProductModel.fromJson(json['productId'] as Map<String, dynamic>),
       json['quantity'] ?? 0,
-      json['orderedProductStatus'] ?? '',
+      json['ordredProduitStatus'] ?? '',
     );
   }
 

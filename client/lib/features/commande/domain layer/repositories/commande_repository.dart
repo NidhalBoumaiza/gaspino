@@ -4,7 +4,7 @@ import '../../../../core/error/failures.dart';
 import '../entities/commande.dart';
 
 abstract class CommandeRepository {
-  Future<Either<Failure, Unit>> passerCommande(Commande commande);
+  Future<Either<Failure, Unit>> passerCommande(dynamic commande);
 
   Future<Either<Failure, List<Commande>>> getMyCommandes();
 

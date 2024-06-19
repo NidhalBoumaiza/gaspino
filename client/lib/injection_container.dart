@@ -8,9 +8,11 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/update_c
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
 import 'package:client/features/commande/data%20layer/repositories/commande_repository_impl.dart';
 import 'package:client/features/commande/domain%20layer/repositories/commande_repository.dart';
+import 'package:client/features/commande/domain%20layer/usecases/passer_cammande_use_case.dart';
 import 'package:client/features/products/data%20layer/repositories/product_repository_impl.dart';
 import 'package:client/features/products/domain%20layer/repositories/product_repository.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/bloc/searsh%20products%20with%20name/searsh_product_with_name_bloc.dart';
 import 'package:client/features/products/presentation%20layer/cubit/confirm%20new%20password%20cubit/confirm_new_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/cubit/new%20password%20cubit/new_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/cubit/old%20password%20cubit/old_password_cubit.dart';
@@ -45,9 +47,16 @@ import 'features/authorisation/presentation layer/cubit/password_visibility_rese
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'features/commande/data layer/data sources/commande_local_data_source.dart';
 import 'features/commande/data layer/data sources/commande_remote_data_source.dart';
+import 'features/commande/domain layer/usecases/cancel_one_product_from_commande.dart';
+import 'features/commande/domain layer/usecases/get_my_commandes_use_case.dart';
 import 'features/commande/domain layer/usecases/get_who_commande_my_product_use_case.dart';
+import 'features/commande/domain layer/usecases/update_product_status_to_delivred.dart';
 import 'features/commande/presentation layer/bloc/get my ordered products/get_my_ordered_products_bloc.dart';
+import 'features/commande/presentation layer/bloc/get my orders/get_my_orders_bloc.dart';
+import 'features/commande/presentation layer/bloc/passer commande bloc/passer_commande_bloc.dart';
+import 'features/commande/presentation layer/cubit/annuler mon commande cubit/annuler_mon_commande_cubit.dart';
 import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
+import 'features/commande/presentation layer/cubit/valide mon produit commande/valide_mon_produit_commande_cubit.dart';
 import 'features/products/data layer/data sources/product_local_data_souce.dart';
 import 'features/products/data layer/data sources/product_remote_data_source.dart';
 import 'features/products/domain layer/usecases/add_product.dart';
@@ -56,6 +65,7 @@ import 'features/products/domain layer/usecases/get_all_products_within_distance
 import 'features/products/domain layer/usecases/get_all_products_within_distance_expires_today.dart';
 import 'features/products/domain layer/usecases/get_my_products.dart';
 import 'features/products/domain layer/usecases/refresh_my_products.dart';
+import 'features/products/domain layer/usecases/search_product_by_name.dart';
 import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
 import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
 import 'features/products/presentation layer/bloc/get my products bloc/get_my_products_bloc.dart';
@@ -68,6 +78,14 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Bloc
+  sl.registerFactory(
+      () => AnnulerMonCommandeCubit(cancelOneProductFromCommande: sl()));
+  sl.registerFactory(() => GetMyOrdersBloc(getMyCommandesUseCase: sl()));
+  sl.registerFactory(() => PasserCommandeBloc(passerCommandeUseCase: sl()));
+  sl.registerFactory(
+      () => SearshProductWithNameBloc(searshProductWithNameUseCase: sl()));
+  sl.registerFactory(() =>
+      ValideMonProduitCommandeCubit(updateProductStatusToDelivered: sl()));
   sl.registerFactory(
       () => GetMyOrderedProductsBloc(getWhoOrderedProductsUseCase: sl()));
   sl.registerFactory(() => OldPasswordCubit());
@@ -105,6 +123,11 @@ Future<void> init() async {
   sl.registerFactory(() => SignOutBloc(signOut: sl()));
   sl.registerFactory(() => UpdateUserPasswordBloc(updatePasswordUseCase: sl()));
   // Use cases
+  sl.registerLazySingleton(() => CancelOneProductFromCommande(sl()));
+  sl.registerLazySingleton(() => GetMyCommandesUseCase(sl()));
+  sl.registerLazySingleton(() => PasserCommandeUseCase(sl()));
+  sl.registerLazySingleton(() => SearchProductByNameUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProductStatusToDelivred(sl()));
   sl.registerLazySingleton(() => GetWhoCommandeMyProductUseCase(sl()));
   sl.registerLazySingleton(() => ModifyMyInformationUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedUserInfoUseCase(sl()));

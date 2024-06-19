@@ -70,7 +70,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           BlocBuilder<PasswordVisibilityCubit,
                               PasswordVisibilityState>(
                             builder: (context, state) {
-                              print('state.isVisible: ${state.isVisible}');
                               return ReusableTextFieldWidget(
                                 errorMessage:
                                     "Vous devez entrer votre mot de passe",

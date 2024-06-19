@@ -3,6 +3,7 @@ import 'package:client/core/widgets/my_customed_button.dart';
 import 'package:client/core/widgets/reusable_text.dart';
 import 'package:client/core/widgets/reusable_text_field_widget.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/pages/searsh_product_by_name_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -91,12 +92,20 @@ class _HomeScreenSqueletteState extends State<HomeScreenSquelette> {
                                     child: SizedBox(
                                       height: 60.h,
                                       width: 300.w,
-                                      child: ReusableTextFieldWidget(
-                                        controller: searchController,
-                                        hintText: 'recherche',
-                                        suffixIcon: Icon(
-                                          Icons.search,
-                                          size: 20.sp,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          navigateToAnotherScreenWithSlideTransitionFromBottomToTop(
+                                              context,
+                                              SearshProductByNameScreen());
+                                        },
+                                        child: ReusableTextFieldWidget(
+                                          enabled: false,
+                                          controller: searchController,
+                                          hintText: 'recherche',
+                                          suffixIcon: Icon(
+                                            Icons.search,
+                                            size: 20.sp,
+                                          ),
                                         ),
                                       ),
                                     ),

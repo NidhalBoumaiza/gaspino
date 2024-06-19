@@ -5,11 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/colors.dart';
 import '../../../../core/utils/navigation_with_transition.dart';
+import '../../../../core/widgets/reusable_app_bar.dart';
 import '../../../../core/widgets/reusable_text.dart';
 import '../../../authorisation/presentation layer/bloc/sign_out_bloc/sign_out_bloc.dart';
 import '../../../authorisation/presentation layer/pages/sign_in_screen.dart';
 import '../bloc/get my ordered products/get_my_ordered_products_bloc.dart';
-import '../widgets/my_ordered_product_widget.dart';
+import '../widgets/mes_produit_commande_liste_view_widget.dart';
 
 class MesProduitCommandeScreen extends StatefulWidget {
   const MesProduitCommandeScreen({super.key});
@@ -30,24 +31,9 @@ class _MesProduitCommandeScreenState extends State<MesProduitCommandeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          centerTitle: true,
-          title: ReusableText(
-            text: 'Mes produits commandés',
-            textSize: 18.sp,
-            textColor: Colors.white,
-            textFontWeight: FontWeight.w800,
-          ),
-          backgroundColor: primaryColor,
+        appBar: ReusableAppBar(
+          pageName: 'Mes produits commandés',
+          leadingIcon: Icons.arrow_back,
         ),
         body: Padding(
           padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 10.h),
@@ -60,25 +46,29 @@ class _MesProduitCommandeScreenState extends State<MesProduitCommandeScreen> {
                       indicatorColor: primaryColor, height: 30.0, width: 30.0),
                 );
               } else if (state is GetMyOrderedProductsLoaded) {
-                return ListView.builder(
-                  itemCount: state.orderedProducts.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 6.0.h),
-                      child: MyOrderedProductWidget(
-                        commande: state.orderedProducts[index],
-                      ),
-                    );
-                  },
+                return MesProduitCommandeListViewWidget(
+                  commandes: state.orderedProducts,
                 );
               } else if (state is GetMyOrderedProductsError) {
-                return Center(
-                  child: ReusableText(
-                    text: state.message,
-                    textSize: 16.sp,
-                    textColor: Colors.black,
-                    textFontWeight: FontWeight.w800,
-                  ),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 80.h),
+                    SizedBox(
+                      height: 300.h,
+                      child: Image.asset("assets/eco.png"),
+                    ),
+                    SizedBox(height: 10.h),
+                    Center(
+                      child: ReusableText(
+                        text: state.message,
+                        textSize: 16.sp,
+                        textColor: Colors.black,
+                        textFontWeight: FontWeight.w800,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 );
               } else if (state is GetMyOrderedProductsNonAuthenticated) {
                 BlocProvider.of<SignOutBloc>(context)

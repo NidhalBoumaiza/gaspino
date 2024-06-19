@@ -17,7 +17,7 @@ router
   .get(authController.protect, commandeController.getWhoCommandedMyProduct);
 
 router.patch(
-  "/cancelOneProductFromCommande/:commandeId:productId",
+  "/cancelOneProductFromCommande/:commandeId/:productId",
   authController.protect,
   commandeController.cancelOneProductFromCommande
 );

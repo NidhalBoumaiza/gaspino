@@ -20,8 +20,13 @@ class CommandeModel extends Commande {
 
   factory CommandeModel.fromJson(Map<String, dynamic> json) {
     return CommandeModel(
-      json['commandeId'] ?? '',
-      [OrderedProductModel.fromJson(json['product'])], // Changed this line
+      json['commandeId'] ?? json['_id'] ?? '',
+      (json['product'] != null
+              ? [OrderedProductModel.fromJson(json['product'])]
+              : (json['products'] as List)
+                  .map((product) => OrderedProductModel.fromJson(product))
+                  .toList()) ??
+          [],
       json['commandeStatus'] ?? '',
       UserModel.fromJson(json['commandeOwner'] as Map<String, dynamic>),
       DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),

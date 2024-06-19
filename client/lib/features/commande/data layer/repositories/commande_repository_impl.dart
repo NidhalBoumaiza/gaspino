@@ -1,5 +1,4 @@
 import 'package:client/core/error/failures.dart';
-import 'package:client/features/commande/data%20layer/models/commande_model.dart';
 import 'package:client/features/commande/domain%20layer/entities/commande.dart';
 import 'package:dartz/dartz.dart';
 
@@ -8,7 +7,6 @@ import '../../../../core/network/network_info.dart';
 import '../../domain layer/repositories/commande_repository.dart';
 import '../data sources/commande_local_data_source.dart';
 import '../data sources/commande_remote_data_source.dart';
-import '../models/ordred_product_model.dart';
 
 class CommandeRepositoryImpl implements CommandeRepository {
   final CommandeRemoteDataSource commandeRemoteDataSource;
@@ -22,26 +20,26 @@ class CommandeRepositoryImpl implements CommandeRepository {
   });
 
   @override
-  Future<Either<Failure, Unit>> passerCommande(Commande commande) async {
-    List<OrderedProductModel> orderedProductModels = commande.products
-        .map((product) => OrderedProductModel(
-              product.product,
-              product.quantity,
-              product.orderedProductStatus,
-            ))
-        .toList();
-
-    CommandeModel commandeModel = CommandeModel(
-      commande.id ?? "",
-      orderedProductModels,
-      commande.commandeStatus ?? "",
-      commande.commandeOwner,
-      commande.createdAt ?? DateTime.now(),
-    );
+  Future<Either<Failure, Unit>> passerCommande(dynamic commande) async {
+    // List<OrderedProductModel> orderedProductModels = commande.products
+    //     .map((product) => OrderedProductModel(
+    //           product.product,
+    //           product.quantity,
+    //           product.orderedProductStatus,
+    //         ))
+    //     .toList();
+    //
+    // CommandeModel commandeModel = CommandeModel(
+    //   commande.id ?? "",
+    //   orderedProductModels,
+    //   commande.commandeStatus ?? "",
+    //   commande.commandeOwner,
+    //   commande.createdAt ?? DateTime.now(),
+    // );
 
     if (await networkInfo.isConnected) {
       try {
-        await commandeRemoteDataSource.passerCommande(commandeModel);
+        await commandeRemoteDataSource.passerCommande(commande);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());

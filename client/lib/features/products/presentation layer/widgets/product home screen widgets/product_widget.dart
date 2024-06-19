@@ -37,20 +37,23 @@ class ProductWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(0.0.w, 5.0.h, 0.0.w, 0),
-              child: Container(
-                height: 100.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xffe0eee9),
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: product.productPictures.isNotEmpty
-                        ? NetworkImage(
-                            "${dotenv.env["URLIMAGE"]}${product.productPictures[0]}")
-                        : const AssetImage("assets/Eating.png")
-                            as ImageProvider<Object>,
-                    fit: BoxFit.cover,
+            Hero(
+              tag: "image",
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0.0.w, 5.0.h, 0.0.w, 0),
+                child: Container(
+                  height: 100.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffe0eee9),
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: product.productPictures.isNotEmpty
+                          ? NetworkImage(
+                              "${dotenv.env["URLIMAGE"]}${product.productPictures[0]}")
+                          : const AssetImage("assets/Eating.png")
+                              as ImageProvider<Object>,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

@@ -22,32 +22,39 @@ class ReusableTextFieldWidget extends StatelessWidget {
   double? paddingValue;
   String? Function(String?)? validatorFunction;
 
-  ReusableTextFieldWidget(
-      {super.key,
-      required this.controller,
-      this.hintText,
-      this.onPressedSuffixIcon,
-      this.suffixIcon,
-      this.obsecureText,
-      this.errorMessage,
-      this.keyboardType,
-      this.textAlignProperty,
-      this.maxLenghtProperty,
-      this.borderSide,
-      this.maxLines,
-      this.minLines,
-      this.prefixIcon,
-      this.onPressedPreffixIcon,
-      this.prefixIconColor,
-      this.enabled,
-      this.paddingValue,
-      this.validatorFunction});
+  TextInputAction? textInputAction;
+  void Function()? onEditingComplete;
+
+  ReusableTextFieldWidget({
+    super.key,
+    required this.controller,
+    this.hintText,
+    this.onPressedSuffixIcon,
+    this.suffixIcon,
+    this.obsecureText,
+    this.errorMessage,
+    this.keyboardType,
+    this.textAlignProperty,
+    this.maxLenghtProperty,
+    this.borderSide,
+    this.maxLines,
+    this.minLines,
+    this.prefixIcon,
+    this.onPressedPreffixIcon,
+    this.prefixIconColor,
+    this.enabled,
+    this.paddingValue,
+    this.validatorFunction,
+    this.textInputAction,
+    this.onEditingComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: paddingValue ?? 8.0),
       child: TextFormField(
+        textInputAction: textInputAction,
         enabled: enabled ?? true,
         minLines: minLines ?? 1,
         maxLines: maxLines ?? 1,
@@ -56,6 +63,7 @@ class ReusableTextFieldWidget extends StatelessWidget {
         keyboardType: keyboardType ?? TextInputType.text,
         obscureText: obsecureText ?? false,
         controller: controller..text,
+        onEditingComplete: onEditingComplete,
         validator: validatorFunction ??
             (value) {
               if (value == null || value.isEmpty) {

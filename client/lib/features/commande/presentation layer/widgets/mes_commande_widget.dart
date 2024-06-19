@@ -7,16 +7,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../domain layer/entities/commande.dart';
+import '../../domain layer/entities/ordred_product.dart';
 
-class MyOrderedProductWidget extends StatelessWidget {
-  Commande commande;
+class MesCommandeWidget extends StatelessWidget {
+  OrderedProduct product;
 
-  MyOrderedProductWidget({super.key, required this.commande});
+  MesCommandeWidget({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    print(commande.products[0].quantity);
+    print(product.quantity);
     final DateFormat dateFormatForRecoveryDate =
         DateFormat('EEEE d MMMM, HH:mm', 'fr_FR');
     return Container(
@@ -49,12 +49,11 @@ class MyOrderedProductWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                      image: commande.products[0].product.productPictures[0] ==
-                              null
+                      image: product.product.productPictures[0] == null
                           ? const AssetImage("assets/Eating.png")
                               as ImageProvider<Object>
                           : NetworkImage(
-                              "${dotenv.env["URLIMAGE"]}${commande.products[0].product.productPictures[0]}"),
+                              "${dotenv.env["URLIMAGE"]}${product.product.productPictures[0]}"),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -67,7 +66,7 @@ class MyOrderedProductWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ReusableText(
-                      text: commande.products[0].product.name,
+                      text: product.product.name,
                       textSize: 14.sp,
                       textFontWeight: FontWeight.w800,
                     ),
@@ -80,7 +79,7 @@ class MyOrderedProductWidget extends StatelessWidget {
                           width: 5.w,
                         ),
                         ReusableText(
-                          text: commande.products[0].quantity.toString(),
+                          text: product.quantity.toString(),
                           textSize: 13.sp,
                           textFontWeight: FontWeight.w700,
                         )
@@ -91,9 +90,9 @@ class MyOrderedProductWidget extends StatelessWidget {
                       child: Container(
                         width: 120.w,
                         child: ReusableText(
-                          text: commande.commandeOwner!.firstName +
+                          text: product.product.productOwner!.firstName +
                               " " +
-                              commande.commandeOwner!.lastName,
+                              product.product.productOwner!.lastName,
                           textSize: 13.sp,
                           textFontWeight: FontWeight.w700,
                         ),
@@ -103,10 +102,10 @@ class MyOrderedProductWidget extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         launchUrl(Uri.parse(
-                            'tel://${commande.commandeOwner!.phoneNumber}'));
+                            'tel://${product.product!.productOwner.phoneNumber}'));
                       },
                       child: ReusableText(
-                        text: commande.commandeOwner!.phoneNumber,
+                        text: product.product!.productOwner.phoneNumber,
                         textSize: 13.sp,
                         textFontWeight: FontWeight.w700,
                         textColor: primaryColor,
@@ -128,9 +127,8 @@ class MyOrderedProductWidget extends StatelessWidget {
                 children: [
                   SizedBox(height: 15.h),
                   ReusableText(
-                    text: commande.products[0].product.priceAfterReduction
-                            .toString() +
-                        " Dt",
+                    text:
+                        product.product.priceAfterReduction.toString() + " Dt",
                     textSize: 13.sp,
                     textFontWeight: FontWeight.w800,
                     textColor: primaryColor,
@@ -139,33 +137,40 @@ class MyOrderedProductWidget extends StatelessWidget {
                   Container(
                     width: 92.w,
                     child: ReusableText(
-                      text:
-                          dateFormatForRecoveryDate.format(commande.createdAt!),
+                      text: dateFormatForRecoveryDate
+                          .format(product.product.createdAt!),
                       textSize: 13.sp,
                       textFontWeight: FontWeight.w800,
                     ),
                   ),
                   SizedBox(height: 5.h),
-                  commande.products[0].orderedProductStatus == "delivered"
+                  product.orderedProductStatus == "delivered"
                       ? StatusIdentifier(
                           borderColor: const Color(0xffEAEBEC),
                           mainColor: const Color(0xffF6FFED),
                           tectColor: const Color(0xff389E0D),
                           textContent: 'deliveré',
                         )
-                      : commande.products[0].orderedProductStatus == "refused"
+                      : product.orderedProductStatus == "refused"
                           ? StatusIdentifier(
                               borderColor: const Color(0xffEAEBEC),
                               mainColor: const Color(0xffFFF1F0),
                               tectColor: const Color(0xffCF1322),
                               textContent: 'Rejeté',
                             )
-                          : StatusIdentifier(
-                              borderColor: const Color(0xffEAEBEC),
-                              mainColor: const Color(0xffFFF7E6),
-                              tectColor: const Color(0xffDC6B08),
-                              textContent: 'En attente',
-                            )
+                          : product.orderedProductStatus == "cancelled"
+                              ? StatusIdentifier(
+                                  borderColor: const Color(0xffEAEBEC),
+                                  mainColor: const Color(0xffFFF1F0),
+                                  tectColor: const Color(0xffCF1322),
+                                  textContent: 'Annuler',
+                                )
+                              : StatusIdentifier(
+                                  borderColor: const Color(0xffEAEBEC),
+                                  mainColor: const Color(0xffFFF7E6),
+                                  tectColor: const Color(0xffDC6B08),
+                                  textContent: 'En attente',
+                                )
                 ],
               )
             ],

@@ -40,4 +40,22 @@ class GetMyOrderedProductsBloc
       },
     );
   }
+
+  void updateProductStatusToDelivered(
+    String commandeId,
+    String productId,
+    List<Commande> commandes,
+  ) {
+    for (var commande in commandes) {
+      if (commande.id == commandeId) {
+        for (var product in commande.products) {
+          if (product.product.id == productId) {
+            product.orderedProductStatus =
+                'delivered'; // Update the status here
+            break;
+          }
+        }
+      }
+    }
+  }
 }

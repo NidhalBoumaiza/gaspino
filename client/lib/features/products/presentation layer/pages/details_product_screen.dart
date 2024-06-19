@@ -59,14 +59,17 @@ class _DetailsProductScreenState extends State<DetailsProductScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 200.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xffe0eee9),
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        "${dotenv.env["URLIMAGE"]}${widget.product.productPictures[0]}"),
-                    fit: BoxFit.cover,
+              Hero(
+                tag: "image",
+                child: Container(
+                  height: 200.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffe0eee9),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          "${dotenv.env["URLIMAGE"]}${widget.product.productPictures[0]}"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

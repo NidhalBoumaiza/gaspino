@@ -3,7 +3,9 @@ import 'package:client/features/authorisation/presentation%20layer/bloc/sign_out
 import 'package:client/features/authorisation/presentation%20layer/bloc/update_user_password_bloc/update_user_password_bloc.dart';
 import 'package:client/features/authorisation/presentation%20layer/cubit/profile_pic_creation%20_cubit/profile_pic_creation__cubit.dart';
 import 'package:client/features/authorisation/presentation%20layer/pages/forget_password_screen.dart';
+import 'package:client/features/commande/presentation%20layer/bloc/passer%20commande%20bloc/passer_commande_bloc.dart';
 import 'package:client/features/products/presentation%20layer/bloc/get%20all%20products%20within%20distance%20bloc/get_all_products_within_distance_bloc.dart';
+import 'package:client/features/products/presentation%20layer/bloc/searsh%20products%20with%20name/searsh_product_with_name_bloc.dart';
 import 'package:client/features/products/presentation%20layer/cubit/confirm%20new%20password%20cubit/confirm_new_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/cubit/new%20password%20cubit/new_password_cubit.dart';
 import 'package:client/features/products/presentation%20layer/pages/home_screen_squelette.dart';
@@ -29,7 +31,10 @@ import 'features/authorisation/presentation layer/cubit/password_visibility_rese
 import 'features/authorisation/presentation layer/cubit/password_visibility_sign_in_cubit/password_visibility_cubit.dart';
 import 'features/authorisation/presentation layer/pages/sign_in_screen.dart';
 import 'features/commande/presentation layer/bloc/get my ordered products/get_my_ordered_products_bloc.dart';
+import 'features/commande/presentation layer/bloc/get my orders/get_my_orders_bloc.dart';
+import 'features/commande/presentation layer/cubit/annuler mon commande cubit/annuler_mon_commande_cubit.dart';
 import 'features/commande/presentation layer/cubit/shopping card cubit/shopping_card_cubit.dart';
+import 'features/commande/presentation layer/cubit/valide mon produit commande/valide_mon_produit_commande_cubit.dart';
 import 'features/products/presentation layer/bloc/add produit bloc/add_produit_bloc.dart';
 import 'features/products/presentation layer/bloc/get all products within distance bloc expires today/get_products_expires_today_bloc.dart';
 import 'features/products/presentation layer/bloc/get my products bloc/get_my_products_bloc.dart';
@@ -107,6 +112,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (create) => di.sl<ConfirmNewPasswordCubit>()),
         BlocProvider(create: (create) => di.sl<NewPasswordCubit>()),
         BlocProvider(create: (create) => di.sl<GetMyOrderedProductsBloc>()),
+        BlocProvider(
+            create: (create) => di.sl<ValideMonProduitCommandeCubit>()),
+        BlocProvider(create: (create) => di.sl<SearshProductWithNameBloc>()),
+        BlocProvider(create: (create) => di.sl<PasserCommandeBloc>()),
+        BlocProvider(create: (create) => di.sl<GetMyOrdersBloc>()),
+        BlocProvider(create: (create) => di.sl<AnnulerMonCommandeCubit>()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

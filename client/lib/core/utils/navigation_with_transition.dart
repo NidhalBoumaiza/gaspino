@@ -31,6 +31,23 @@ navigateToAnotherScreenWithSlideTransitionFromRightToLeft(context, newScreen) {
   );
 }
 
+navigateToAnotherScreenWithSlideTransitionFromBottomToTop(context, newScreen) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => newScreen,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1), // Start from bottom
+            end: Offset.zero, // End at top
+          ).animate(animation),
+          child: child,
+        );
+      },
+    ),
+  );
+}
+
 navigateToAnotherScreenWithSlideTransitionFromRightToLeftPushReplacement(
     context, newScreen) {
   Navigator.of(context).pushReplacement(

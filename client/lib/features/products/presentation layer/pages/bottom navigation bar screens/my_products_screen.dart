@@ -39,7 +39,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           if (state is GetMyProductsLoading) {
             return ShimmerLoadingMyProducts();
           } else if (state is GetMyProductsLoaded) {
-            return state.products.length != 0
+            return state.products.isNotEmpty
                 ? MyProductListViewWidget(
                     products: state.products,
                   )

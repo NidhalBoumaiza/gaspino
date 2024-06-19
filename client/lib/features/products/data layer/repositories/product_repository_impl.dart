@@ -129,9 +129,9 @@ class ProductReopositryImpl implements ProductRepository {
       String name) async {
     if (await networkInfo.isConnected) {
       try {
-        // final products = await productRemoteDataSource.searchProductByName(name);
-        // return Right(products);
-        return Left(ServerFailure());
+        final products =
+            await productRemoteDataSource.searchProductByName(name);
+        return Right(products);
       } on ServerException {
         return Left(ServerFailure());
       } on ServerMessageException {

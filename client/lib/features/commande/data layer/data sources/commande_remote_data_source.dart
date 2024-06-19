@@ -10,7 +10,7 @@ import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 
 abstract class CommandeRemoteDataSource {
-  Future<Unit> passerCommande(CommandeModel commandeModel);
+  Future<Unit> passerCommande(dynamic commandeModel);
 
   Future<List<CommandeModel>> getMyCommandes();
 
@@ -29,17 +29,20 @@ class CommandeRemoteDataSourceImpl implements CommandeRemoteDataSource {
   CommandeRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<Unit> passerCommande(CommandeModel commandeModel) async {
+  Future<Unit> passerCommande(dynamic commandeModel) async {
     final token = await this.token;
+    dynamic body = {"products": commandeModel};
+    body = json.encode(body);
+
     final response = await client.post(
       Uri.parse("${dotenv.env['URL']}/commandes/passerCommande"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(commandeModel.toJson()),
+      body: body,
     );
-
+    print(response.body);
     return handleResponse(response);
   }
 
@@ -56,28 +59,13 @@ class CommandeRemoteDataSourceImpl implements CommandeRemoteDataSource {
 
     if (response.statusCode == 200) {
       final decodeJson = json.decode(response.body);
-      final List<CommandeModel> commandes = (decodeJson['commandes'] as List)
-          .map((commande) => CommandeModel.fromJson(commande))
+      final List<CommandeModel> commandes = decodeJson['commandes']
+          .map<CommandeModel>((commande) => CommandeModel.fromJson(commande))
           .toList();
       return commandes;
     } else {
       return handleResponseWithoutUnit(response);
     }
-  }
-
-  @override
-  Future<Unit> cancelOneProductFromCommande(
-      String commandeId, String productId) async {
-    final token = await this.token;
-    final response = await client.delete(
-      Uri.parse(
-          "${dotenv.env['URL']}/commandes/cancelOneProductFromCommande/$commandeId/$productId"),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    return handleResponse(response);
   }
 
   @override
@@ -105,6 +93,22 @@ class CommandeRemoteDataSourceImpl implements CommandeRemoteDataSource {
   }
 
   @override
+  Future<Unit> cancelOneProductFromCommande(
+      String commandeId, String productId) async {
+    final token = await this.token;
+    final response = await client.patch(
+      Uri.parse(
+          "${dotenv.env['URL']}/commandes/cancelOneProductFromCommande/$commandeId/$productId"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.body);
+    return handleResponse(response);
+  }
+
+  @override
   Future<Unit> updateProductStatusToDelivered(
       String commandeId, String productId) async {
     final token = await this.token;
@@ -116,7 +120,7 @@ class CommandeRemoteDataSourceImpl implements CommandeRemoteDataSource {
         'Authorization': 'Bearer $token',
       },
     );
-
+    print(response.body);
     return handleResponse(response);
   }
 

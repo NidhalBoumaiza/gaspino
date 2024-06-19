@@ -126,7 +126,7 @@ exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
     req.user.location.coordinates[0],
     req.user.location.coordinates[1],
   ];
-
+  const now = new Date();
   const maxDistance = req.query.distance || 5000;
   console.log(maxDistance);
   const products = await Product.find({
@@ -139,6 +139,9 @@ exports.getAllProductsWithDistance = catchAsync(async (req, res, next) => {
         $maxDistance: maxDistance,
       },
     },
+    // expirationDate: {
+    //   $gt: now,
+    // },
   });
   if (products.length === 0) {
     return next(new AppError("Aucun produit trouvé dans votre zone", 400));

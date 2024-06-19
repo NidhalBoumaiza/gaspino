@@ -18,7 +18,7 @@ class ProductWidgetForMyProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 230.h,
+      height: 240.h,
       width: 170.w,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -111,6 +111,25 @@ class ProductWidgetForMyProductsScreen extends StatelessWidget {
                   SizedBox(width: 5.w),
                   ReusableText(
                     text: dateFormat.format(product.expirationDate),
+                    textSize: 10.sp,
+                    textColor: Colors.black,
+                    textFontWeight: FontWeight.w800,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(5.0.w, 2.0.h, 0.0.w, 0),
+              child: Row(
+                children: [
+                  Icon(
+                    FontAwesomeIcons.shoppingCart,
+                    color: primaryColor,
+                    size: 15.sp,
+                  ),
+                  SizedBox(width: 5.w),
+                  ReusableText(
+                    text: product.quantity.toString(),
                     textSize: 10.sp,
                     textColor: Colors.black,
                     textFontWeight: FontWeight.w800,

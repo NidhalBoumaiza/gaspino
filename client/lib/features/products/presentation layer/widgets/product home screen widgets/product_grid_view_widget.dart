@@ -8,15 +8,17 @@ import '../../../domain layer/entities/product.dart';
 
 class ProductGridViewWidget extends StatelessWidget {
   List<Product> products;
-  Future<void> Function() onRefresh;
+  Future<void> Function()? onRefresh;
 
-  ProductGridViewWidget(
-      {super.key, required this.products, required this.onRefresh});
+  ProductGridViewWidget({super.key, required this.products, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: onRefresh ??
+          () {
+            return Future.value();
+          },
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

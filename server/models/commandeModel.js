@@ -14,7 +14,7 @@ const commandeSchema = mongoose.Schema({
       },
       ordredProduitStatus: {
         type: String,
-        enum: ["pending", "delivered", "refused"],
+        enum: ["pending", "delivered", "refused" , "cancelled"],
         default: "pending",
       },
      
@@ -42,7 +42,7 @@ commandeSchema.pre(/^find/, function (next) {
   }).populate({
     path: "commandeOwner",
    // select: "firstName lastName phoneNumber email",
-  });
+  }).populate({path: "products._id",});
   next();
 });
 

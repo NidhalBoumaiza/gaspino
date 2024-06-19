@@ -83,23 +83,44 @@ class MyProductListViewWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                     top: 8.0.h, left: 8.0.w, right: 8.0.w, bottom: 20.h),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onLongPress: () {
-                        _showBottomSheet(context, products[index]);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.0.h),
-                        child: ProductWidgetForMyProductsScreen(
-                            product: products[index]),
+                child: products.length > 0
+                    ? ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onLongPress: () {
+                              _showBottomSheet(context, products[index]);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 8.0.h),
+                              child: ProductWidgetForMyProductsScreen(
+                                  product: products[index]),
+                            ),
+                          );
+                        },
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 80.h),
+                          SizedBox(
+                            height: 300.h,
+                            child: Image.asset("assets/eco.png"),
+                          ),
+                          SizedBox(height: 10.h),
+                          Center(
+                            child: ReusableText(
+                              text: "Vous n'avez pas encore des produits",
+                              textSize: 16.sp,
+                              textColor: Colors.black,
+                              textFontWeight: FontWeight.w800,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
               ),
               if (state is DeleteMyProductLoading)
                 Column(
@@ -130,16 +151,6 @@ class MyProductListViewWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text('Modifier'),
-                onTap: () {
-                  // Naviguer vers l'écran de modification
-                  Navigator.pop(context);
-                  // Ajoutez ici la navigation vers l'écran de modification
-                },
-              ),
-              Divider(),
               ListTile(
                 leading: Icon(Icons.delete),
                 title: ReusableText(

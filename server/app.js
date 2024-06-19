@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 
 // 2) CRON JOBS
 cronTasks.updateProductStatus();
-
+cronTasks.updateOrderedProductStatusToRejected();
 // 3) ROUTES
 app.use("/images", express.static(path.join(__dirname, "./images")));
 

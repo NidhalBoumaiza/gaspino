@@ -21,6 +21,8 @@ abstract class ProductRemoteDataSource {
   Future<List<ProductModel>> getMyProducts();
 
   Future<Unit> deleteMyProduct(String id);
+
+  Future<List<ProductModel>> searchProductByName(String name);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -302,5 +304,34 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     return sharedPreferences.getString('token');
+  }
+
+  @override
+  Future<List<ProductModel>> searchProductByName(String name) async {
+    final token = await this.token;
+    final response = await client.get(
+      Uri.parse(
+          "${dotenv.env['URL']}/products/searchProductByName/?productName=$name"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      final decodeJson = json.decode(response.body);
+      final List<ProductModel> products = decodeJson['products']
+          .map<ProductModel>((product) => ProductModel.fromJson(product))
+          .toList();
+      return products;
+    } else if (response.statusCode == 400) {
+      final responseBody = jsonDecode(response.body);
+      final errorMessage = responseBody['message'] as String;
+      ServerMessageFailure.message = errorMessage;
+      throw ServerMessageException();
+    } else if (response.statusCode == 410) {
+      throw UnauthorizedException();
+    } else {
+      throw ServerException();
+    }
   }
 }

@@ -4,10 +4,10 @@ import '../../../../core/error/failures.dart';
 import '../entities/product.dart';
 import '../repositories/product_repository.dart';
 
-class SearchProductByName {
+class SearchProductByNameUseCase {
   final ProductRepository repository;
 
-  SearchProductByName(this.repository);
+  SearchProductByNameUseCase(this.repository);
 
   Future<Either<Failure, List<Product>>> call(String name) async {
     return await repository.searchProductByName(name);
